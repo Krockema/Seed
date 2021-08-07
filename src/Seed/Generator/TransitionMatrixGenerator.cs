@@ -1,15 +1,13 @@
-﻿using System;
-using System.Runtime.InteropServices.ComTypes;
-using Seed.Distributions;
+﻿using Seed.Distributions;
 using Seed.Matrix;
 using Seed.Parameter;
-using Seed.Parameter.Material;
 using Seed.Parameter.TransitionMatrix;
+using System;
 
 namespace Seed.Generator
 {
     public class TransitionMatrixGenerator
-    {
+    { 
         public MatrixSize Size { get; set; }
         public Lambda Lambda { get; set; }
         
@@ -32,7 +30,7 @@ namespace Seed.Generator
             // Initialization Matrix A 
 
             TransitionMatrix = new TransitionMatrix(Size, new MatrixPoissonInitializer(Lambda));
-            TransitionMatrix.Randomize(Randomizer);
+            //TransitionMatrix.Randomize(Randomizer);
             TransitionMatrix.Normalize();
 
            
@@ -63,7 +61,7 @@ namespace Seed.Generator
         /// </summary>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        public bool GetPreSign(TransitionMatrix matrix)
+        private bool GetPreSign(TransitionMatrix matrix)
         {
             return matrix.GetOrganizationalDegree() - OrganizationalDegree.Value > 0;
         }

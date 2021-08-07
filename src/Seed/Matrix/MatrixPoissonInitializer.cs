@@ -4,6 +4,9 @@ using Seed.Parameter.TransitionMatrix;
 
 namespace Seed.Matrix
 {
+    /// <summary>
+    /// initialize the matrix with custom Poisson distribution
+    /// </summary>
     public class MatrixPoissonInitializer : IMatrixInitializer
     {
         private Lambda Lambda { get; set; }
@@ -13,13 +16,6 @@ namespace Seed.Matrix
             Lambda = lambda;
         }
 
-        /// <summary>
-        /// initialize the matrix with custom Poisson distribution
-        /// </summary>
-        /// <param name="i"></param>
-        /// <param name="j"></param>
-        /// <param name="lambda"></param>
-        /// <returns></returns>
         public double CellValue(int i, int j)
         {
             if (i <= j)

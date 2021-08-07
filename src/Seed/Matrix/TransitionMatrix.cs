@@ -2,9 +2,7 @@
 using Seed.Distributions;
 using Seed.Parameter.TransitionMatrix;
 using System;
-using System.Globalization;
 using System.Linq;
-using MathNet.Numerics;
 
 namespace Seed.Matrix
 {
@@ -21,7 +19,6 @@ namespace Seed.Matrix
         {
             _matrix = matrix;
         }
-        private OrganizationalDegree OrganizationDegree;
         /// <summary>
         /// Creates a M x M Matrix based on the given Initializer
         /// </summary>

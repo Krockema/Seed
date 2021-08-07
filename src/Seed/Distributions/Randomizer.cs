@@ -16,7 +16,7 @@ namespace Seed.Distributions
             random = new Random(seed);
         }
         /// <summary>
-        /// returns a double in range [0.0, 1.0]
+        /// returns a double in range [0.0, <1.0]
         /// </summary>
         /// <returns></returns>
         public double Next()
@@ -24,6 +24,11 @@ namespace Seed.Distributions
             return random.NextDouble();
         }
 
+        /// <summary>
+        /// returns a integer in range [0.0, <max]
+        /// </summary>
+        /// <param name="max"></param>
+        /// <returns></returns>
         public int Next(int max)
         {
             return random.Next(max);
