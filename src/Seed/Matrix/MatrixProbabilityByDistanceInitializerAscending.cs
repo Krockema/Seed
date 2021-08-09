@@ -18,7 +18,7 @@ namespace Seed.Matrix
 
         public double CellValue(int i, int j)
         {
-            if (i == j && i == 1) return 1;
+            //if (i == j && i == 1) return 1;
             if (i >= j) return 0;
 
             var accumulated = 0.0;

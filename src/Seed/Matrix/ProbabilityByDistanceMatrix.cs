@@ -27,13 +27,7 @@ namespace Seed.Matrix
 
         public int GetRowJump(int rowLevel, double roll)
         {
-            return _matrix.Row(rowLevel).Find(x => x >= roll).Item1;
-        }
-
-        public ProbabilityByDistanceMatrix Mirror()
-        {
-            _matrix = _matrix.Transpose();
-            return this;
+            return _matrix.Row(rowLevel).Find(x => x >= roll || x == 1).Item1;
         }
     }
 }

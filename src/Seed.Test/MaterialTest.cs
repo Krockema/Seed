@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Xunit;
 
 namespace Seed.Test
@@ -63,16 +64,58 @@ namespace Seed.Test
         
         [Theory]
         [InlineData(4, 2, 4)]
-        public void ThrowOnInvalidConfigToFewSalesMaterial(int complexity, int reuse, int _verticalIntegration)
+        public void ThrowOnInvalidConfigToFewSalesMaterial(int complexity, int reuse, int salesMaterials)
         {
 
             configuration = new();
             configuration.WithOption(new VerticalIntegration(4));
             configuration.WithOption(new ComplexityRatio(complexity));
             configuration.WithOption(new ReuseRatio(reuse));
-            configuration.WithOption(new SalesMaterial(_verticalIntegration));
+            configuration.WithOption(new SalesMaterial(salesMaterials));
             Assert.Throws<ArgumentException>(() => new MaterialGenerator(configuration, random));
         }
+
+        [Theory]
+        [InlineData(4, 2, 8)]
+        public void ShowNodesStructures(int complexity, int reuse, int salesMaterials)
+        {
+
+            configuration = new();
+            configuration.WithOption(new VerticalIntegration(4));
+            configuration.WithOption(new ComplexityRatio(complexity));
+            configuration.WithOption(new ReuseRatio(reuse));
+            configuration.WithOption(new SalesMaterial(salesMaterials));
+            var matGenerator = new MaterialGenerator(configuration, random);
+            materials = matGenerator.CreateMaterials();
+            edges = matGenerator.CreateEdges();
+            matGenerator.ConnectEdges();
+            Assert.Empty(edges);
+
+
+            var sales = matGenerator.Materials.NodesSalesOnly();
+            var purchase = matGenerator.Materials.NodesPurchaseOnly();
+            System.Diagnostics.Debug.WriteLine($"> {sales.Count()} Sales Materials");
+            System.Diagnostics.Debug.WriteLine($"> {purchase.Count()} Purchase Materials ");
+
+            foreach (var node in sales)
+            {
+                System.Diagnostics.Debug.WriteLine($"> {node.InitialLevel} {node.Guid}");
+                SolveNodeStructure(node.IncomingEdges.ToArray(), 2);
+            }
+
+
+        }
+
+        public void SolveNodeStructure(Edge[] edges, int lvl)
+        {
+            foreach (var edge in edges)
+            {
+                var intend = "".PadLeft(lvl, '-');
+                System.Diagnostics.Debug.WriteLine(intend + $"> {edge.From.InitialLevel} {edge.From.Guid}");
+                SolveNodeStructure(edge.From.IncomingEdges.ToArray(), lvl + 2);
+            }
+        }
+
 
     }
 }

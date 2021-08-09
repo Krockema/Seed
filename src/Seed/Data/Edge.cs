@@ -12,7 +12,7 @@ namespace Seed.Data
             get { return _from; }
             set {
                 _from = value;
-                _from.OutgoingEdge.Add(this);
+                _from.OutgoingEdges.Add(this);
                 } 
             }
         public Node To { get { return _to; } 

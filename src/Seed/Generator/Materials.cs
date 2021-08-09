@@ -28,9 +28,23 @@ namespace Seed.Generator
         }
         public int CountNodesInUse => NodesInUse.Count();
 
+        public Node[] ToNodeArray => NodesInUse.ToArray();
+ 
         public Node[] NodesWithoutPurchase()
         {
             return NodesInUse.Where(x => x.InitialLevel != this.Count - 1).ToArray();
+        }
+        public Node[] NodesWithoutSales()
+        {
+            return NodesInUse.Where(x => x.InitialLevel != 0).ToArray();
+        }
+        public Node[] NodesSalesOnly()
+        {
+            return NodesInUse.Where(x => x.InitialLevel == 0).ToArray();
+        }
+        public Node[] NodesPurchaseOnly()
+        {
+            return NodesInUse.Where(x => x.InitialLevel == this.Count - 1).ToArray();
         }
     }
 }

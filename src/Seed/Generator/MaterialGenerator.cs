@@ -13,7 +13,7 @@ namespace Seed.Generator
 {
     public class MaterialGenerator
     {
-        private readonly Materials _materials = new();
+        public Materials Materials { get; init; } = new();
         private Queue<Edge> _unusedEdges = new Queue<Edge>();
         private readonly ListExtension<Edge> _edges = new ();
         private readonly IRandomizer _randomizer;
@@ -21,7 +21,6 @@ namespace Seed.Generator
         private readonly int _complexityRatio;
         private readonly int _reuseRatio;
         private readonly int _salesMaterial;
-        private readonly int _numberOfEdges;
         public MaterialGenerator(Configuration cfg, IRandomizer randomizer)
         {
             _verticalIntegration = cfg.Get<VerticalIntegration>().Value;
@@ -39,7 +38,7 @@ namespace Seed.Generator
             // step 2: Generate Edges
 
         }
-
+        
         public ListExtension<Hirachie> CreateMaterials()
         {
             foreach (var level in Enumerable.Range(1, _verticalIntegration))
@@ -50,7 +49,7 @@ namespace Seed.Generator
                 if (numberOfMaterials > 0)
                     CreateNodes(Convert.ToInt32(numberOfMaterials), level);
             }
-            return _materials;
+            return Materials;
         }
 
         private void CreateNodes(int numberOfNodes, int currentLevel)
@@ -58,20 +57,20 @@ namespace Seed.Generator
             var nodes = new ListExtension<Node>();
             for (int i = 0; i < numberOfNodes; i++)
             {
-                nodes.Add(new Node() { InitialLevel = currentLevel - 1});
+                nodes.Add(new Node() { InitialLevel = currentLevel - 1 });
             }
             nodes.SaveNodes(); 
-            _materials.Add(new(currentLevel, nodes));    
+            Materials.Add(new(currentLevel, nodes));    
         }
 
         private List<Node> SalesMaterial()
         {
-            return _materials[0].Nodes;
+            return Materials[0].Nodes;
         }
 
         private List<Node> PurchaseMaterial()
         {
-            return _materials[_materials.Count() - 1].Nodes;
+            return Materials[Materials.Count() - 1].Nodes;
         }
 
         public void ConnectEdges()
@@ -84,57 +83,12 @@ namespace Seed.Generator
             CreateDivergentStructure();
         }
 
-        private void CreateDivergentStructure()
-        {
-            var stages = _materials.Count;
-            var decendingProbabilityMatrix = 
-                new ProbabilityByDistanceMatrix
-                (new MatrixSize(stages), new MatrixProbabilityByDistanceInitializerAscending(stages));
-
-
-            for (int level = stages - 1; level >= 2; level--) 
-            { 
-                var currentLevelNodesWithoutEdges = _materials[level].Nodes;
-                var higherLevelNodes = _materials[level - 1].Nodes;
-
-                while (currentLevelNodesWithoutEdges.Count > 0)
-                {
-                    var edge = _unusedEdges.Dequeue();
-                    edge.From = currentLevelNodesWithoutEdges.DequeueNode(); 
-                    edge.To = higherLevelNodes.GetNodeAt(_randomizer.Next(currentLevelNodesWithoutEdges.Count()));
-                    _edges.Add(edge);
-                }
-            }
-
-            for (int level = 0; level < _materials.Count; level++)
-            {
-                var currentLevelNodesWithoutEdges = _materials[level].Nodes;
-
-                while (currentLevelNodesWithoutEdges.Count > 0)
-                {
-                    var edge = _unusedEdges.Dequeue();
-                    var jumpTo = decendingProbabilityMatrix.GetRowJump(level, _randomizer.Next());
-                    var lowerLevelNodes = _materials[jumpTo].Nodes;
-                    edge.From = lowerLevelNodes.GetNodeFromStorage(_randomizer.Next(lowerLevelNodes.CountAll));
-                    edge.To = currentLevelNodesWithoutEdges.DequeueNode();
-                    _edges.Add(edge);
-                }
-            }
-            DistributeRemainingEdges();
-        }
-
-
         private void CreateConvergentStructure()
         {
-            var stages = _materials.Count;
-            var decendingProbabilityMatrix = new ProbabilityByDistanceMatrix
-                (new MatrixSize(_materials.Count)
-                , new MatrixProbabilityByDistanceInitializerDescending());
-
-            for (int level = 0; level < _materials.Count -1; level++)
+            for (int level = 0; level < Materials.Count -1; level++)
             {
-                var currentLevelNodesWithoutEdges = _materials[level].Nodes;
-                var lowerLevelNodes = _materials[level + 1].Nodes;
+                var currentLevelNodesWithoutEdges = Materials[level].Nodes;
+                var lowerLevelNodes = Materials[level + 1].Nodes;
 
                 while (currentLevelNodesWithoutEdges.Count > 0)
                 {
@@ -145,15 +99,18 @@ namespace Seed.Generator
                 }
             }
 
-            for (int level = stages - 1; level >= 2; level--)
+            for (int level = Materials.Count - 1; level >= 2; level--)
             {
-                var currentLevelNodesWithoutEdges = _materials[level].Nodes;
+                var currentLevelNodesWithoutEdges = Materials[level].Nodes;
+                var decendingProbabilityMatrix = new ProbabilityByDistanceMatrix
+                    (new MatrixSize(Materials.Count)
+                    , new MatrixProbabilityByDistanceInitializerDescending());
 
                 while (currentLevelNodesWithoutEdges.Count > 0)
                 {
                     var edge = _unusedEdges.Dequeue();
                     var jumpTo = decendingProbabilityMatrix.GetRowJump(level, _randomizer.Next());
-                    var higherLevelNodes = _materials[jumpTo].Nodes;
+                    var higherLevelNodes = Materials[jumpTo].Nodes;
                     edge.From = currentLevelNodesWithoutEdges.DequeueNode();
                     edge.To = higherLevelNodes.GetNodeFromStorage(_randomizer.Next(higherLevelNodes.CountAll));
                     _edges.Add(edge);
@@ -162,17 +119,57 @@ namespace Seed.Generator
             }
             DistributeRemainingEdges();
         }
+
+
+        private void CreateDivergentStructure()
+        {
+            var stages = Materials.Count;
+            for (int level = stages - 1; level >= 2; level--)
+            {
+                var currentLevelNodesWithoutEdges = Materials[level].Nodes;
+                var higherLevelNodes = Materials[level - 1].Nodes;
+
+                while (currentLevelNodesWithoutEdges.Count > 0)
+                {
+                    var edge = _unusedEdges.Dequeue();
+                    edge.From = currentLevelNodesWithoutEdges.DequeueNode();
+                    edge.To = higherLevelNodes.GetNodeAt(_randomizer.Next(currentLevelNodesWithoutEdges.Count()));
+                    _edges.Add(edge);
+                }
+            }
+
+            for (int level = 0; level < Materials.Count; level++)
+            {
+                var currentLevelNodesWithoutEdges = Materials[level].Nodes;
+                var decendingProbabilityMatrix =
+                    new ProbabilityByDistanceMatrix
+                        (new MatrixSize(stages), new MatrixProbabilityByDistanceInitializerAscending(stages));
+
+                while (currentLevelNodesWithoutEdges.Count > 0)
+                {
+                    var edge = _unusedEdges.Dequeue();
+                    var jumpTo = decendingProbabilityMatrix.GetRowJump(level, _randomizer.Next());
+                    var lowerLevelNodes = Materials[jumpTo].Nodes;
+                    edge.From = lowerLevelNodes.GetNodeFromStorage(_randomizer.Next(lowerLevelNodes.CountAll));
+                    edge.To = currentLevelNodesWithoutEdges.DequeueNode();
+                    _edges.Add(edge);
+                }
+            }
+            DistributeRemainingEdges();
+        }
+
+
         private void DistributeRemainingEdges()
         {
             if (_unusedEdges.Count == 0)
                 return;
 
             var decendingProbabilityMatrix = new ProbabilityByDistanceMatrix
-                (new MatrixSize(_materials.Count)
-                , new MatrixProbabilityByDistanceInitializerDescending()).Mirror();
+                (new MatrixSize(Materials.Count)
+                , new MatrixProbabilityByDistanceInitializerDescending());
             
             // caus we are looking from top to bottom, lower than purchase is not possible
-            var nodesToDrawFrom = _materials.NodesWithoutPurchase();
+            var nodesToDrawFrom = Materials.NodesWithoutSales();
 
             while (_unusedEdges.Count>0)
             {
@@ -181,8 +178,8 @@ namespace Seed.Generator
                 edge.From = nodesToDrawFrom[_randomizer.Next(nodesToDrawFrom.Length)];
                 // get target Row
                 var targetLevel = decendingProbabilityMatrix.GetRowJump(edge.From.InitialLevel, _randomizer.Next());
-                var numberOfNodes = _materials.CountDequeuedNodesFor(targetLevel);
-                edge.To = _materials.GetNodeInUseBy(targetLevel, _randomizer.Next(numberOfNodes));
+                var numberOfNodes = Materials.CountDequeuedNodesFor(targetLevel);
+                edge.To = Materials.GetNodeInUseBy(targetLevel, _randomizer.Next(numberOfNodes));
                 _edges.Add(edge);
             }
         }
@@ -191,9 +188,9 @@ namespace Seed.Generator
         public Queue<Edge> CreateEdges()
         {
             // reuse * (all nodes substracted by the number of nodes from first level (sales))
-            double maxReuseUseEdge = _reuseRatio * (_materials.Sum(x => x.Nodes.Count()) - SalesMaterial().Count);
+            double maxReuseUseEdge = _reuseRatio * (Materials.Sum(x => x.Nodes.Count()) - SalesMaterial().Count);
             // reuse * (all nodes substracted by the number of nodes last first level (purchase))
-            double maxComplexityRatio = _complexityRatio * (_materials.Sum(x => x.Nodes.Count()) - PurchaseMaterial().Count());
+            double maxComplexityRatio = _complexityRatio * (Materials.Sum(x => x.Nodes.Count()) - PurchaseMaterial().Count());
             // Take the bigger number
             var edgeCount = Convert.ToInt32(Math.Round(Math.Max(maxReuseUseEdge, maxComplexityRatio), 0));
             // Create a set of empty edges acoding to edgeCount

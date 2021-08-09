@@ -1,4 +1,3 @@
-using System.Linq;
 using Seed.Distributions;
 using Seed.Generator;
 using Seed.Matrix;
@@ -46,12 +45,11 @@ namespace Seed.Test
         [Fact]
         public void IsAscending()
         {
-            var matrix = new ProbabilityByDistanceMatrix(new MatrixSize(10), new MatrixProbabilityByDistanceInitializerAscending(10));
+            var size = 5;
+            var matrix = new ProbabilityByDistanceMatrix(new MatrixSize(size), new MatrixProbabilityByDistanceInitializerAscending(size));
             System.Diagnostics.Debug.Write(matrix.GetMatrix.ToString());
-            System.Diagnostics.Debug.Write(matrix.GetValuesFor(9).ToString());
-            var targetRow = matrix.GetRowJump(8, 0.95);
-            System.Diagnostics.Debug.WriteLine("Get row jump " + matrix.GetRowJump(8, 0.95));
-            Assert.Equal(7, targetRow);
+            Assert.Equal(4, matrix.GetRowJump(2, 0.55));
+            Assert.Equal(3, matrix.GetRowJump(2, 0.4));
         }
         [Fact]
         public void IsDescending()
@@ -59,15 +57,10 @@ namespace Seed.Test
             var matrix = new ProbabilityByDistanceMatrix(new MatrixSize(10), new MatrixProbabilityByDistanceInitializerDescending());
             System.Diagnostics.Debug.Write(matrix.GetMatrix.ToString());
             System.Diagnostics.Debug.Write(matrix.GetValuesFor(9).ToString());
-            System.Diagnostics.Debug.WriteLine("Get row jump " + matrix.GetRowJump(8, 0.95));
-        }
-        [Fact]
-        public void IsDescendingMirror()
-        {
-            var matrix = new ProbabilityByDistanceMatrix(new MatrixSize(10), new MatrixProbabilityByDistanceInitializerDescending()).Mirror();
-            System.Diagnostics.Debug.Write(matrix.GetMatrix.ToString());
-            System.Diagnostics.Debug.Write(matrix.GetValuesFor(9).ToString());
-            System.Diagnostics.Debug.WriteLine("Get row jump " + matrix.GetRowJump(8, 0.95));
+            var targetRow = matrix.GetRowJump(9, 0.2);
+            System.Diagnostics.Debug.WriteLine("Get row jump " + targetRow);
+            Assert.Equal(3, targetRow);
+            Assert.Equal(0, matrix.GetRowJump(1, 0.2));
         }
     }
 }
