@@ -7,13 +7,13 @@ namespace Seed.Generator
 {
     public class Hirachie 
     {
-        private Tuple<int, ListExtension<Node>> _level;
-        public Hirachie(int level, ListExtension<Node> nodes)
+        private Tuple<int, NodeList> _level;
+        public Hirachie(int level, NodeList nodes)
         {
-            _level = new Tuple<int, ListExtension<Node>>(level, nodes);
+            _level = new Tuple<int, NodeList>(level, nodes);
         }
 
         public int Level => _level.Item1;
-        public ListExtension<Node> Nodes => _level.Item2;
+        public NodeList Nodes => _level.Item2;
     }
 }

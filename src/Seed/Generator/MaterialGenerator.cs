@@ -15,7 +15,7 @@ namespace Seed.Generator
     {
         public Materials Materials { get; init; } = new();
         private Queue<Edge> _unusedEdges = new Queue<Edge>();
-        private readonly ListExtension<Edge> _edges = new ();
+        private readonly List<Edge> _edges = new ();
         private readonly IRandomizer _randomizer;
         private readonly int _verticalIntegration;
         private readonly int _complexityRatio;
@@ -39,7 +39,7 @@ namespace Seed.Generator
 
         }
         
-        public ListExtension<Hirachie> CreateMaterials()
+        public Materials CreateMaterials()
         {
             foreach (var level in Enumerable.Range(1, _verticalIntegration))
             {
@@ -54,7 +54,7 @@ namespace Seed.Generator
 
         private void CreateNodes(int numberOfNodes, int currentLevel)
         {
-            var nodes = new ListExtension<Node>();
+            var nodes = new NodeList();
             for (int i = 0; i < numberOfNodes; i++)
             {
                 nodes.Add(new Node() { InitialLevel = currentLevel - 1 });
@@ -141,14 +141,14 @@ namespace Seed.Generator
             for (int level = 0; level < Materials.Count; level++)
             {
                 var currentLevelNodesWithoutEdges = Materials[level].Nodes;
-                var decendingProbabilityMatrix =
+                var probabilityMatrix =
                     new ProbabilityByDistanceMatrix
                         (new MatrixSize(stages), new MatrixProbabilityByDistanceInitializerAscending(stages));
 
                 while (currentLevelNodesWithoutEdges.Count > 0)
                 {
                     var edge = _unusedEdges.Dequeue();
-                    var jumpTo = decendingProbabilityMatrix.GetRowJump(level, _randomizer.Next());
+                    var jumpTo = probabilityMatrix.GetRowJump(level, _randomizer.Next());
                     var lowerLevelNodes = Materials[jumpTo].Nodes;
                     edge.From = lowerLevelNodes.GetNodeFromStorage(_randomizer.Next(lowerLevelNodes.CountAll));
                     edge.To = currentLevelNodesWithoutEdges.DequeueNode();

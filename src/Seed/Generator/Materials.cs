@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Seed.Generator
 {
-    public class Materials : ListExtension<Hirachie>
+    public class Materials : List<Hirachie>
     {
         public static List<Node> NodesInUse { get; set; } = new List<Node>();
 

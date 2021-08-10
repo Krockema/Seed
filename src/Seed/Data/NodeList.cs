@@ -1,31 +1,26 @@
-﻿using Seed.Data;
+﻿
 using Seed.Generator;
-using System;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Seed.Data
 {
-    public class ListExtension<T> : List<T>
+    public class NodeList: List<Node>
     {
-        public ListExtension() : base() { }
-        private T[] NodeStoreage { get; set; }
+        public NodeList() : base() { }
+        private Node[] NodeStoreage { get; set; }
         public void SaveNodes()
         {
             NodeStoreage = this.ToArray();
         }
 
-        public T GetNodeAt(int index)
+        public Node GetNodeAt(int index)
         {
-            var node = this[index];
-            return node;
+            return this[index];
         }
         public Node DequeueNode()
         {
-            var node = this[0] as Node;
+            var node = this[0];
             this.RemoveAt(0);
             Materials.NodesInUse.Add(node);
             return node;
@@ -33,7 +28,7 @@ namespace Seed.Data
         public int CountAll => NodeStoreage.Length;
         public Node GetNodeFromStorage(int index)
         {
-            return NodeStoreage[index] as Node;
+            return NodeStoreage[index];
         }
     }
 }
