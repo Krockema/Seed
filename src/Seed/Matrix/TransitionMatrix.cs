@@ -12,7 +12,9 @@ namespace Seed.Matrix
     public class TransitionMatrix
     {
         MatrixBuilder<double> _matrixBuilder = Matrix<double>.Build;
+        MatrixProbabilityTransitionInitializer TransitionInitializer;
         Matrix<double> _matrix { get; set; }
+        Matrix<double> _probabilityMatrix { get; set; }
         public Matrix<double> GetMatrix => _matrix;
 
         public void SetMatrix(Matrix<double> matrix)
@@ -27,11 +29,13 @@ namespace Seed.Matrix
         public TransitionMatrix(MatrixSize size, IMatrixInitializer initializer)
         {
             _matrix = _matrixBuilder.Dense(size.Value, size.Value, initializer.CellValue);
+            TransitionInitializer = new MatrixProbabilityTransitionInitializer();
         }
 
         public TransitionMatrix(Matrix<double> matrix)
         {
             _matrix = matrix;
+            TransitionInitializer = new MatrixProbabilityTransitionInitializer();
         }
         /// <summary>
         /// Randomizes the matrix by given Random number generator
@@ -66,8 +70,20 @@ namespace Seed.Matrix
 
         public TransitionMatrix HalfAdd(TransitionMatrix other)
         {
-            return  new TransitionMatrix(_matrix.MapIndexed((i, j, x) => 0.5 * (other.GetMatrix[i, j] + x)));
+            return new TransitionMatrix(_matrix.MapIndexed((i, j, x) => 0.5 * (other.GetMatrix[i, j] + x)));
         }
+
+        public Matrix<double> TransformToProbability()
+        {
+            TransitionInitializer.SetSource(_matrix);
+            _probabilityMatrix = _matrixBuilder.Dense(_matrix.RowCount, _matrix.ColumnCount, TransitionInitializer.CellValue);
+            return _probabilityMatrix;
+        }
+        public int GetJump(int source, double roll)
+        {
+            return _probabilityMatrix.Row(source).Find(x => x >= roll || x == 1).Item1;
+        }
+
     }
 }
 

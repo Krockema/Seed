@@ -16,9 +16,9 @@ namespace Seed.Test
         public Configuration Configuration { get; } = new();
         public Randomizer Randomizer { get; } = new Randomizer(29);
         public Materials Materials { get; private set; } 
-        public Edge[] Edges { get; private set;}
-        public Queue<Edge> InitialEdges { get; private set; }
-        public Action<Edge[], int> solveStructure { get; } = null;
+        public MaterialEdge[] Edges { get; private set;}
+        public Queue<MaterialEdge> InitialEdges { get; private set; }
+        public Action<MaterialEdge[], int> solveStructure { get; } = null;
         public MaterialFixture()
         {
             solveStructure = (edges, lvl) =>

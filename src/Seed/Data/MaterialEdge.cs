@@ -4,18 +4,18 @@ using System.Text;
 
 namespace Seed.Data
 {
-    public class Edge
+    public class MaterialEdge
     {
-        private Node _from;
-        private Node _to;
-        public Node From { 
+        private MaterialNode _from;
+        private MaterialNode _to;
+        public MaterialNode From { 
             get { return _from; }
             set {
                 _from = value;
                 _from.OutgoingEdges.Add(this);
                 } 
             }
-        public Node To { get { return _to; } 
+        public MaterialNode To { get { return _to; } 
             set {
                 _to = value;
                 _to.IncomingEdges.Add(this);

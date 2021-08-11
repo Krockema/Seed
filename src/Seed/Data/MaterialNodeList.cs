@@ -5,20 +5,20 @@ using System.Collections.Generic;
 
 namespace Seed.Data
 {
-    public class NodeList: List<Node>
+    public class MaterialNodeList: List<MaterialNode>
     {
-        public NodeList() : base() { }
-        private Node[] NodeStoreage { get; set; }
+        public MaterialNodeList() : base() { }
+        private MaterialNode[] NodeStoreage { get; set; }
         public void SaveNodes()
         {
             NodeStoreage = this.ToArray();
         }
 
-        public Node GetNodeAt(int index)
+        public MaterialNode GetNodeAt(int index)
         {
             return this[index];
         }
-        public Node DequeueNode()
+        public MaterialNode DequeueNode()
         {
             var node = this[0];
             this.RemoveAt(0);
@@ -26,7 +26,7 @@ namespace Seed.Data
             return node;
         }
         public int CountAll => NodeStoreage.Length;
-        public Node GetNodeFromStorage(int index)
+        public MaterialNode GetNodeFromStorage(int index)
         {
             return NodeStoreage[index];
         }

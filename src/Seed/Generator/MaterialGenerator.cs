@@ -14,8 +14,8 @@ namespace Seed.Generator
     public class MaterialGenerator
     {
         public Materials Materials { get; init; } = new();
-        private Queue<Edge> _unusedEdges = new Queue<Edge>();
-        private readonly List<Edge> _edges = new ();
+        private Queue<MaterialEdge> _unusedEdges = new Queue<MaterialEdge>();
+        private readonly List<MaterialEdge> _edges = new ();
         private readonly IRandomizer _randomizer;
         private readonly int _verticalIntegration;
         private readonly int _complexityRatio;
@@ -54,21 +54,21 @@ namespace Seed.Generator
 
         private void CreateNodes(int numberOfNodes, int currentLevel)
         {
-            var nodes = new NodeList();
+            var nodes = new MaterialNodeList();
             for (int i = 0; i < numberOfNodes; i++)
             {
-                nodes.Add(new Node() { InitialLevel = currentLevel - 1 });
+                nodes.Add(new MaterialNode() { InitialLevel = currentLevel - 1 });
             }
             nodes.SaveNodes(); 
             Materials.Add(new(currentLevel, nodes));    
         }
 
-        private List<Node> SalesMaterial()
+        private List<MaterialNode> SalesMaterial()
         {
             return Materials[0].Nodes;
         }
 
-        private List<Node> PurchaseMaterial()
+        private List<MaterialNode> PurchaseMaterial()
         {
             return Materials[Materials.Count() - 1].Nodes;
         }
@@ -185,7 +185,7 @@ namespace Seed.Generator
         }
 
 
-        public Queue<Edge> CreateEdges()
+        public Queue<MaterialEdge> CreateEdges()
         {
             // reuse * (all nodes substracted by the number of nodes from first level (sales))
             double maxReuseUseEdge = _reuseRatio * (Materials.Sum(x => x.Nodes.Count()) - SalesMaterial().Count);
@@ -194,9 +194,9 @@ namespace Seed.Generator
             // Take the bigger number
             var edgeCount = Convert.ToInt32(Math.Round(Math.Max(maxReuseUseEdge, maxComplexityRatio), 0));
             // Create a set of empty edges acoding to edgeCount
-            _unusedEdges = new Queue<Edge>(
+            _unusedEdges = new Queue<MaterialEdge>(
                                 from edge in Enumerable.Range(0, edgeCount) 
-                                select new Edge());
+                                select new MaterialEdge());
             return _unusedEdges;
         }
     }

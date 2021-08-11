@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization.Formatters;
-
-namespace Seed.Matrix
+﻿namespace Seed.Matrix
 {       
     /// <summary>
     /// Creates a with probabilities that are decreasing with increasing distance

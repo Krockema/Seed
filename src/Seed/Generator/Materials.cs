@@ -1,15 +1,14 @@
 ﻿using Seed.Data;
-using System;
+using Seed.Generator.TraverseActions;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Seed.Generator
 {
-    public class Materials : List<Hirachie>
+    public class Materials : List<MaterialHirachie>
     {
-        public static List<Node> NodesInUse { get; set; } = new List<Node>();
+        public static List<MaterialNode> NodesInUse { get; set; } = new List<MaterialNode>();
+        public static List<MaterialNodeOperation> Operations { get; set; } = new List<MaterialNodeOperation>();
 
         public int CountDequeuedNodesFor(int level) => NodesInUse.Count(x => x.InitialLevel == level);
         /// <summary>
@@ -17,34 +16,43 @@ namespace Seed.Generator
         /// </summary>
         /// <param name="index"></param>
         /// <returns>Node at Index</returns>
-        public Node GetNodeInUseBy(int index)
+        public MaterialNode GetNodeInUseBy(int index)
         {
             return NodesInUse[index];
         }
-        public Node GetNodeInUseBy(int level, int index)
+        public MaterialNode GetNodeInUseBy(int level, int index)
         {
             return NodesInUse.Where(x => x.InitialLevel == level)
                              .ElementAt(index);
         }
         public int CountNodesInUse => NodesInUse.Count();
 
-        public Node[] ToNodeArray => NodesInUse.ToArray();
+        public MaterialNode[] ToNodeArray => NodesInUse.ToArray();
  
-        public Node[] NodesWithoutPurchase()
+        public MaterialNode[] NodesWithoutPurchase()
         {
             return NodesInUse.Where(x => x.InitialLevel != this.Count - 1).ToArray();
         }
-        public Node[] NodesWithoutSales()
+        public MaterialNode[] NodesWithoutSales()
         {
             return NodesInUse.Where(x => x.InitialLevel != 0).ToArray();
         }
-        public Node[] NodesSalesOnly()
+        public MaterialNode[] NodesSalesOnly()
         {
             return NodesInUse.Where(x => x.InitialLevel == 0).ToArray();
         }
-        public Node[] NodesPurchaseOnly()
+        public MaterialNode[] NodesPurchaseOnly()
         {
             return NodesInUse.Where(x => x.InitialLevel == this.Count - 1).ToArray();
+        }
+
+        public void Traverse(MaterialEdge[] edges, ITraverseAction action)
+        {
+            foreach (var edge in edges)
+            {
+                action.Do(edge);
+                Traverse(edge.From.IncomingEdges.ToArray(), action);
+            }
         }
     }
 }

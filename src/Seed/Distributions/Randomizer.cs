@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using MathNet.Numerics.Distributions;
+using MathNet.Numerics.Random;
 
 namespace Seed.Distributions
 {
@@ -9,30 +9,34 @@ namespace Seed.Distributions
     /// </summary>
     public class Randomizer : IRandomizer
     {
-        private Random random;
+        private Random randomSource;
 
         public Randomizer(int seed)
         {
-            random = new Random(seed);
+            randomSource = new Random(seed);
         }
         /// <summary>
         /// returns a double in range [0.0, <1.0]
         /// </summary>
         /// <returns></returns>
         public double Next()
-        {
-            return random.NextDouble();
+{
+            return ContinuousUniform.Sample(randomSource, 0, 1);
         }
 
         /// <summary>
-        /// returns a integer in range [0.0, <max]
+        /// returns a integer in range [0.0, <maxExclusive]
         /// </summary>
-        /// <param name="max"></param>
+        /// <param name="max">Exclusive</param>
         /// <returns></returns>
-        public int Next(int max)
+        public int Next(int maxExclusive)
         {
-            return random.Next(max);
+            return DiscreteUniform.Sample(randomSource, 0, maxExclusive - 1);
         }
 
+        public int NextWithMeanAndVariance(double mean, double variance)
+        {
+            return Convert.ToInt32(Normal.WithMeanVariance(mean, variance, randomSource).Sample());
+        }
     }
 }
