@@ -1,15 +1,8 @@
-﻿using Seed.Generator;
-using Seed.Parameter.Operation;
+﻿using Seed.Parameter.Operation;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Seed.Test.DefaultConfiguration
 {
@@ -55,7 +48,7 @@ namespace Seed.Test.DefaultConfiguration
         [InlineData(3, 1)]
         public void TestFallBackFromImport(int resourceIndex, int toolIndex)
         {
-            var jsonText = File.ReadAllText(Environment.CurrentDirectory + @"\Config\DefaultResources.json");
+            var jsonText = File.ReadAllText(Environment.CurrentDirectory + @"\Config\ExsampleResources.json");
             var inJson = System.Text.Json.JsonSerializer.Deserialize<ResourceGroups>(jsonText);
             var meanToolOperationFallback = inJson.GetMeanOperationDurationFor(resourceIndex, toolIndex);
             var varianeToolOperationFallback = inJson.GetVarianceOperationDurationFor(resourceIndex, toolIndex);
