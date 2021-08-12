@@ -19,7 +19,9 @@ namespace Seed.Distributions
         /// <returns></returns>
         public override int NextWithMeanAndVariance(double mean, double variance)
         {
-            return Binomial.Sample(base.randomSource, 1.0 - variance, (int)(mean / (1.0 - variance)));
+            return Binomial.Sample(rnd: base.randomSource
+                                   , p: 1.0 - variance
+                                   , n: (int)(mean / (1.0 - variance)));
         }
     }
 }

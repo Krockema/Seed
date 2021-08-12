@@ -1,5 +1,4 @@
 ﻿using Seed.Data;
-using Seed.Generator.TraverseActions;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -44,15 +43,6 @@ namespace Seed.Generator
         public MaterialNode[] NodesPurchaseOnly()
         {
             return NodesInUse.Where(x => x.InitialLevel == this.Count - 1).ToArray();
-        }
-
-        public void Traverse(MaterialEdge[] edges, ITraverseAction action)
-        {
-            foreach (var edge in edges)
-            {
-                action.Do(edge);
-                Traverse(edge.From.IncomingEdges.ToArray(), action);
-            }
         }
     }
 }

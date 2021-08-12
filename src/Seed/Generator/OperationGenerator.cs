@@ -1,5 +1,4 @@
 ﻿using Seed.Data;
-using Seed.Generator.TraverseActions;
 using Seed.Matrix;
 
 namespace Seed.Generator
