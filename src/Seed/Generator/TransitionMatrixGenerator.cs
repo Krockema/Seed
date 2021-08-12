@@ -24,7 +24,7 @@ namespace Seed.Generator
         }
 
 
-        public void Generate()
+        public TransitionMatrix Generate()
         {
 
             // Initialization Matrix A 
@@ -37,7 +37,7 @@ namespace Seed.Generator
             // Initialization Matrix B depending on organizational Degree of Matrix A
             var matrixB = (TransitionMatrix.GetOrganizationalDegree() > OrganizationalDegree.Value)
                 ? new TransitionMatrix(Size, new MatrixNormalInitializer(Size.Value))
-                : new TransitionMatrix(Size, new MatrixIdentityInitializer());
+                : new TransitionMatrix(Size, new MatrixLeftShiftIdentityInitializer(Size.Value));
 
             while (Math.Abs(TransitionMatrix.GetOrganizationalDegree()-OrganizationalDegree.Value) > 0.001)
             {
@@ -53,6 +53,7 @@ namespace Seed.Generator
                     matrixB.SetMatrix(matrixC.GetMatrix);
                 }
             }
+            return TransitionMatrix;
 
         }
 

@@ -9,4 +9,10 @@
     <PackageReference Include="MathNet.Numerics" Version="4.15.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Config\DefaultResources.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

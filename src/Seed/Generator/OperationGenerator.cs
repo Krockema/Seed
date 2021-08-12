@@ -1,27 +1,30 @@
-﻿using Seed.Generator.TraverseActions;
+﻿using Seed.Data;
+using Seed.Generator.TraverseActions;
+using Seed.Matrix;
 
 namespace Seed.Generator
 {
     public class OperationGenerator : IOperationGenerator
     {
         private IOperationDistributor _operationDistributor;
-        private Materials _materials = null;
-        public OperationGenerator(IOperationDistributor operationDistributor, Materials materials)
+        private MaterialNode[] _materials = null;
+        public OperationGenerator(IOperationDistributor operationDistributor, MaterialNode[] materialsWithoutPurchase)
         {
             _operationDistributor = operationDistributor;
-            _materials = materials;
+            _materials = materialsWithoutPurchase;
         }
         
-        public void GenerateOperations()
+        public void GenerateOperations(bool rerollStart)
         {
-            
-            var traverseAction = new TraverseActionAppendOperations(_operationDistributor);
-            var salesNodes = _materials.NodesSalesOnly();
-
-            foreach (var node in salesNodes)
+              foreach (var node in _materials)
             {
-                _materials.Traverse(node.IncomingEdges.ToArray(), traverseAction);
+                _operationDistributor.GenerateOperationsFor(node, rerollStart);
             }
+        }
+
+        public TransitionMatrix GetGeneratedTransitionMatrix()
+        {
+            return new TransitionMatrix(_operationDistributor.TargetTransitions);
         }
     }
 }

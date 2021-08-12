@@ -5,7 +5,7 @@ using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Seed.Test
+namespace Seed.Test.MaterialStructure
 {
     public class ConvergingMaterials : IClassFixture<MaterialFixture>
     {
@@ -24,7 +24,7 @@ namespace Seed.Test
             _materialFixture.Configuration.ReplaceOption(_complexityRatio);
             _materialFixture.Configuration.ReplaceOption(_reuseRatio);
             _materialFixture.Configuration.ReplaceOption(_salesMaterial);
-            _materialFixture.Generate();
+            _materialFixture.GenerateMaterials();
         }
 
         [Fact]

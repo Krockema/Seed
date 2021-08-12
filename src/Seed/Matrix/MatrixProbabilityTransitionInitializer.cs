@@ -19,9 +19,9 @@ namespace Seed.Matrix
         public double CellValue(int i, int j)
         {
             var accum = 0.0;
-            for (int r = 0; r < i; r++)
+            for (int r = 0; r <= j; r++)
             {
-                accum += Value.At(r, j);
+                accum = accum + Value.At(i, r);
             }
             return accum;
         }

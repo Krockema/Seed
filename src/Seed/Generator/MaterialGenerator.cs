@@ -133,7 +133,7 @@ namespace Seed.Generator
                 {
                     var edge = _unusedEdges.Dequeue();
                     edge.From = currentLevelNodesWithoutEdges.DequeueNode();
-                    edge.To = higherLevelNodes.GetNodeAt(_randomizer.Next(currentLevelNodesWithoutEdges.Count()));
+                    edge.To = higherLevelNodes.GetNodeAt(_randomizer.Next(higherLevelNodes.Count()));
                     _edges.Add(edge);
                 }
             }

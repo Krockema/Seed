@@ -2,21 +2,17 @@
 using Seed.Distributions;
 using Seed.Generator;
 using Seed.Parameter;
-using Seed.Parameter.Material;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Seed.Test
+namespace Seed.Test.MaterialStructure
 {
     public class MaterialFixture : IDisposable
     {
         public Configuration Configuration { get; } = new();
-        public Randomizer Randomizer { get; } = new Randomizer(29);
-        public Materials Materials { get; private set; } 
-        public MaterialEdge[] Edges { get; private set;}
+        public RandomizerBase Randomizer { get; } = new RandomizerBase(29);
+        public Materials Materials { get; private set; }
+        public MaterialEdge[] Edges { get; private set; }
         public Queue<MaterialEdge> InitialEdges { get; private set; }
         public Action<MaterialEdge[], int> solveStructure { get; } = null;
         public MaterialFixture()
@@ -31,7 +27,7 @@ namespace Seed.Test
                 }
             };
         }
-        public void Generate()
+        public void GenerateMaterials()
         {
             var matGenerator = new MaterialGenerator(Configuration, Randomizer);
             Materials = matGenerator.CreateMaterials();
@@ -42,6 +38,6 @@ namespace Seed.Test
 
         public void Dispose() { }
 
-  
+
     }
 }

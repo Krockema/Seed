@@ -1,0 +1,110 @@
+{
+  "ResourceGroupList": [
+    {
+      "Name": "Saw",
+      "ResourceQuantity": 2,
+      "Tools": [
+        {
+          "Name": "Blade 4mm",
+          "OperationDurationDistributionParameter": {
+            "Mean": 360,
+            "Variance": 0.2
+          }
+        },
+        {
+          "Name": "Blade 6mm",
+          "OperationDurationDistributionParameter": {
+            "Mean": 480,
+            "Variance": 0.2
+          }
+        },
+        {
+          "Name": "Blade 8mm",
+          "OperationDurationDistributionParameter": {
+            "Mean": 600,
+            "Variance": 0.2
+          }
+        }
+      ]
+    },
+    {
+      "Name": "Drill",
+      "ResourceQuantity": 1,
+      "OperationDurationDistributionParameter": {
+        "Mean": 300,
+        "Variance": 0.2
+      },
+      "Tools": [
+        {
+          "Name": "Head 10mm"
+        },
+        {
+          "Name": "Head 15mm"
+        }
+      ]
+    },
+    {
+      "Name": "Assembly",
+      "ResourceQuantity": 3,
+      "OperationDurationDistributionParameter": {
+        "Mean": 0,
+        "Variance": 0
+      },
+      "Tools": [
+        {
+          "Name": "Screwing",
+          "OperationDurationDistributionParameter": {
+            "Mean": 300,
+            "Variance": 0.2
+          }
+        },
+        {
+          "Name": "Glueing",
+          "OperationDurationDistributionParameter": {
+            "Mean": 600,
+            "Variance": 0.2
+          }
+        },
+        {
+          "Name": "Plug",
+          "OperationDurationDistributionParameter": {
+            "Mean": 300,
+            "Variance": 0.2
+          }
+        },
+        {
+          "Name": "File",
+          "OperationDurationDistributionParameter": {
+            "Mean": 900,
+            "Variance": 0.2
+          }
+        }
+      ]
+    },
+    {
+      "Name": "Paint",
+      "ResourceQuantity": 1,
+      "OperationDurationDistributionParameter": {
+        "Mean": 0,
+        "Variance": 0
+      },
+      "Tools": [
+        {
+          "Name": "Grounding"
+        },
+        {
+          "Name": "Coloring"
+        }
+      ]
+    }
+  ],
+  "DefaultOperationDurationDistributionParameter": {
+    "Mean": 300,
+    "Variance": 0.2
+  },
+  "DefaultOperationAmountDistributionParameter": {
+    "Mean": 4,
+    "Variance": 0.2
+  },
+  "Value": "ResourceConfiguration"
+}

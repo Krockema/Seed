@@ -31,7 +31,11 @@ namespace Seed.Matrix
             _matrix = _matrixBuilder.Dense(size.Value, size.Value, initializer.CellValue);
             TransitionInitializer = new MatrixProbabilityTransitionInitializer();
         }
-
+        public TransitionMatrix(double[,] matrix)
+        {
+            _matrix = _matrixBuilder.DenseOfArray(matrix);
+            TransitionInitializer = new MatrixProbabilityTransitionInitializer();
+        }
         public TransitionMatrix(Matrix<double> matrix)
         {
             _matrix = matrix;

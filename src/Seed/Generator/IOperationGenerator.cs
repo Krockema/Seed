@@ -2,6 +2,6 @@
 {
     public interface IOperationGenerator
     {
-        void GenerateOperations();
+        void GenerateOperations(bool rerollStart);
     }
 }
