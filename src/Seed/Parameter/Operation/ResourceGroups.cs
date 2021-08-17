@@ -13,7 +13,9 @@ namespace Seed.Parameter.Operation
         public List<ResourceGroup> ResourceGroupList { get; set; }
         public DistributionParameter DefaultOperationDurationDistributionParameter { get; set; }
         public DistributionParameter DefaultOperationAmountDistributionParameter { get; set; }
-
+        public double DefaultCostRateIdleTime { get; set; }
+        public double DefaultCostRateProcessing { get; set; }
+        public double DefaultCostRateSetup { get; set; }
         public List<ResourceTool> GetToolsFor(int resourceId)
         {
             return this.ResourceGroupList[resourceId].Tools;
@@ -44,7 +46,27 @@ namespace Seed.Parameter.Operation
                                          DefaultOperationDurationDistributionParameter.Mean
                                       : 10);         // Resource Default;
         }
-        
+
+        public double GetCostRateIdleTimeFor(int resourceIndex)
+        {
+            return this.ResourceGroupList[resourceIndex].CostRateIdleTime != 0.0 ? 
+                   /* then */ this.ResourceGroupList[resourceIndex].CostRateIdleTime 
+                   /* else */ : this.DefaultCostRateIdleTime;
+        }
+
+        public double GetCostRateSetupFor(int resourceIndex)
+        {
+            return this.ResourceGroupList[resourceIndex].CostRateSetup != 0.0 ?
+                   /* then */ this.ResourceGroupList[resourceIndex].CostRateSetup
+                   /* else */ : this.DefaultCostRateSetup;
+        }
+
+        public double GetCostRateProcessingFor(int resourceIndex)
+        {
+            return this.ResourceGroupList[resourceIndex].CostRateProcessing != 0.0 ?
+                   /* then */ this.ResourceGroupList[resourceIndex].CostRateProcessing
+                   /* else */ : this.DefaultCostRateProcessing;
+        }
 
         public double GetVarianceOperationDurationFor(int resourceIndex, int toolIndex)
         {

@@ -14,6 +14,9 @@ namespace Seed.Parameter.Operation
 
         public string Name { get; set; }
         public long ResourceQuantity { get; set; }
+        public double CostRateIdleTime { get; set;}
+        public double CostRateProcessing { get; set; }
+        public double CostRateSetup { get; set; }
         public DistributionParameter OperationDurationDistributionParameter { get; set; }
         public List<ResourceTool> Tools { get; set; }
 

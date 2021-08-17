@@ -2,6 +2,9 @@
   "ResourceGroupList": [
     {
       "Name": "Saw",
+      "CostRateIdleTime": 10.0,
+      "CostRateProcessing": 60.0,
+      "CostRateSetup": 90.0,
       "ResourceQuantity": 2,
       "Tools": [
         {
@@ -46,6 +49,9 @@
     {
       "Name": "Assembly",
       "ResourceQuantity": 3,
+      "CostRateIdleTime": 10.0,
+      "CostRateProcessing": 80.0,
+      "CostRateSetup": 160.0,
       "OperationDurationDistributionParameter": {
         "Mean": 0,
         "Variance": 0
@@ -84,6 +90,9 @@
     {
       "Name": "Paint",
       "ResourceQuantity": 1,
+      "CostRateIdleTime": 10.0,
+      "CostRateProcessing": 60.0,
+      "CostRateSetup": 100.0,
       "OperationDurationDistributionParameter": {
         "Mean": 0,
         "Variance": 0
@@ -98,6 +107,9 @@
       ]
     }
   ],
+  "DefaultCostRateIdleTime": 10.0,
+  "DefaultCostRateProcessing": 60.0,
+  "DefaultCostRateSetup": 100.0,
   "DefaultOperationDurationDistributionParameter": {
     "Mean": 300,
     "Variance": 0.2

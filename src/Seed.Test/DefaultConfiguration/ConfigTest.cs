@@ -55,6 +55,9 @@ namespace Seed.Test.DefaultConfiguration
             Assert.Equal(TimeSpan.FromSeconds(300), meanToolOperationFallback);
             Assert.Equal(0.2, varianeToolOperationFallback);
 
+            Assert.Equal(100.0, inJson.GetCostRateSetupFor(resourceIndex));
+            Assert.Equal(60.0, inJson.GetCostRateProcessingFor(resourceIndex));
+            Assert.Equal(10.0, inJson.GetCostRateIdleTimeFor(resourceIndex));
         }
     }
 }
