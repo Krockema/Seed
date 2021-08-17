@@ -1,4 +1,6 @@
-﻿namespace Seed.Data
+﻿using System.Collections.Generic;
+
+namespace Seed.Data
 {
     public class MaterialNode
     {

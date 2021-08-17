@@ -1,10 +1,12 @@
 ﻿using Seed.Parameter.Operation;
+using System;
+using System.Collections.Generic;
 
 namespace Seed.Parameter
 {
-    public class ResourceGroupParameter : IParameter
+    public class ResourceConfig : IParameter
     {
-        public ResourceGroupParameter() 
+        public ResourceConfig() 
         {
             DefaultOperationDurationDistributionParameter = new();
             DefaultOperationAmountDistributionParameter = new();
@@ -77,27 +79,27 @@ namespace Seed.Parameter
                 : DefaultOperationDurationDistributionParameter.Variance;    // No further check needed as int is 0 anyway
         }
 
-        public ResourceGroupParameter WithDefaultOperationsDurationVariance(double varianceInPercent)
+        public ResourceConfig WithDefaultOperationsDurationVariance(double varianceInPercent)
         {
             this.DefaultOperationDurationDistributionParameter.Variance = varianceInPercent;
             return this;
         }
-        public ResourceGroupParameter WithDefaultOperationsDurationMean(TimeSpan mean)
+        public ResourceConfig WithDefaultOperationsDurationMean(TimeSpan mean)
         {
             this.DefaultOperationDurationDistributionParameter.Mean = mean.TotalSeconds;
             return this;
         }
-        public ResourceGroupParameter WithDefaultOperationsAmountVariance(double varianceInPercent)
+        public ResourceConfig WithDefaultOperationsAmountVariance(double varianceInPercent)
         {
             this.DefaultOperationAmountDistributionParameter.Variance = varianceInPercent;
             return this;
         }
-        public ResourceGroupParameter WithDefaultOperationsAmountMean(int quantity)
+        public ResourceConfig WithDefaultOperationsAmountMean(int quantity)
         {
             this.DefaultOperationAmountDistributionParameter.Mean = quantity;
             return this;
         }
-        public ResourceGroupParameter WithResourceGroup(List<ResourceGroup> groups)
+        public ResourceConfig WithResourceGroup(List<ResourceGroup> groups)
         {
             this.ResourceGroupList.AddRange(groups); 
             return this;

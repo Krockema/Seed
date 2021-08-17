@@ -1,6 +1,8 @@
 ﻿using Seed.Generator;
 using Seed.Parameter;
 using Seed.Parameter.TransitionMatrix;
+using System;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -11,13 +13,12 @@ namespace Seed.Test.MaterialStructure
         private MaterialFixture _materialFixture;
         private ITestOutputHelper _out;
         private TransitionMatrixParameter tmp = new TransitionMatrixParameter() { Lambda = 2, OrganizationalDegree = 0.15 };
-        private MaterialStructureParameter msp = new MaterialStructureParameter() { ComplexityRatio = 4, ReuseRatio = 2, NumberOfSalesMaterials = 8, VerticalIntegration = 4 };
+        private StructureParameter msp = new StructureParameter() { ComplexityRatio = 4, ReuseRatio = 2, NumberOfSalesMaterials = 8, VerticalIntegration = 4 };
         public ConvergingMaterials(MaterialFixture materialFixture, ITestOutputHelper outputHelper)
         {
             _out = outputHelper;
             _materialFixture = materialFixture;
-            _materialFixture.Configuration.ReplaceOption(tmp);
-            _materialFixture.Configuration.ReplaceOption(msp);
+            _materialFixture.Configuration.ReplaceOption(new MaterialConfig{ MaterialStructure = msp, OperationStructure = tmp });
             _materialFixture.GenerateMaterials();
         }
 
@@ -34,7 +35,7 @@ namespace Seed.Test.MaterialStructure
                 else 
                     expected = salesMaterials * (Math.Pow((double)msp.ComplexityRatio / msp.ReuseRatio, materialHirarchie.Level - 1));
 
-                Assert.Equal(Math.Round(expected, 0), Materials.NodesInUse.Count(y => y.InitialLevel + 1 == materialHirarchie.Level));
+                Assert.Equal(Math.Round(expected, 0), _materialFixture.Materials.NodesInUse.Count(y => y.InitialLevel + 1 == materialHirarchie.Level));
             }
         }
 

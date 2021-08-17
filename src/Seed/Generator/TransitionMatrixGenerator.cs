@@ -2,6 +2,7 @@
 using Seed.Matrix;
 using Seed.Parameter;
 using Seed.Parameter.TransitionMatrix;
+using System;
 
 namespace Seed.Generator
 {
@@ -16,7 +17,7 @@ namespace Seed.Generator
         public TransitionMatrixGenerator(Configuration config)
         {
             transitionMatrixParameter = config.Get<TransitionMatrixParameter>();
-            Size = config.Get<ResourceGroupParameter>().ResourceGroupList.Count;
+            Size = config.Get<ResourceConfig>().ResourceGroupList.Count;
         }
 
 

@@ -4,10 +4,10 @@ using System.Linq;
 
 namespace Seed.Generator
 {
-    public class Materials : List<MaterialHirachie>
+    public class Materials : List<MaterialHirachie>, IWithOperationsInUse, IWithNodeInUse
     {
-        public static List<MaterialNode> NodesInUse { get; set; } = new List<MaterialNode>();
-        public static List<MaterialNodeOperation> Operations { get; set; } = new List<MaterialNodeOperation>();
+        public List<MaterialNode> NodesInUse { get; set; } = new List<MaterialNode>();
+        public List<MaterialNodeOperation> Operations { get; set; } = new List<MaterialNodeOperation>();
 
         public int CountDequeuedNodesFor(int level) => NodesInUse.Count(x => x.InitialLevel == level);
         /// <summary>

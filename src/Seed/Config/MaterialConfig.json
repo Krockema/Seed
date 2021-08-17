@@ -1,0 +1,14 @@
+{
+  "MaterialParameter": {
+    "MaterialStructure": {
+      "ComplexityRatio": 4,
+      "ReuseRatio": 2,
+      "NumberOfSalesMaterials": 8,
+      "VerticalIntegration": 4
+    },
+    "OperationStructure": {
+      "Lambda": 2,
+      "OrganizationalDegree": 0.15
+    }
+  }
+}

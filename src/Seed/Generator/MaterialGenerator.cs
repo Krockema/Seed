@@ -2,23 +2,26 @@
 using Seed.Distributions;
 using Seed.Matrix;
 using Seed.Parameter;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Seed.Generator
 {
     public class MaterialGenerator
     {
         public Materials Materials { get; init; } = new();
-        private MaterialStructureParameter materialStructureParameter;
+        private MaterialConfig materialParameter;
         private Queue<MaterialEdge> _unusedEdges = new Queue<MaterialEdge>();
         private readonly List<MaterialEdge> _edges = new ();
         private readonly IRandomizer _randomizer;
-        private int _verticalIntegration => materialStructureParameter.VerticalIntegration;
-        private double _complexityRatio => materialStructureParameter.ComplexityRatio;
-        private double _reuseRatio => materialStructureParameter.ReuseRatio;
-        private int _salesMaterial => materialStructureParameter.NumberOfSalesMaterials;
+        private int _verticalIntegration => materialParameter.MaterialStructure.VerticalIntegration;
+        private double _complexityRatio => materialParameter.MaterialStructure.ComplexityRatio;
+        private double _reuseRatio => materialParameter.MaterialStructure.ReuseRatio;
+        private int _salesMaterial => materialParameter.MaterialStructure.NumberOfSalesMaterials;
         public MaterialGenerator(Configuration cfg, IRandomizer randomizer)
         {
-            materialStructureParameter = cfg.Get<MaterialStructureParameter>();
+            materialParameter = cfg.Get<MaterialConfig>();
             
             _randomizer = randomizer;
 
@@ -47,7 +50,7 @@ namespace Seed.Generator
 
         private void CreateNodes(int numberOfNodes, int currentLevel)
         {
-            var nodes = new MaterialNodeList();
+            var nodes = new MaterialNodeList(Materials);
             for (int i = 0; i < numberOfNodes; i++)
             {
                 nodes.Add(new MaterialNode() { InitialLevel = currentLevel - 1 });

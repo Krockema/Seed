@@ -18,7 +18,7 @@ namespace Seed.Test.OperationStructure
         public RandomizerBase Randomizer { get; } = new RandomizerBase(1337);
 
         
-        public ResourceGroupParameter ResourceGroups;
+        public ResourceConfig ResourceConfig;
         public TransitionMatrix TransitionMatrix;
         public int MatrixSize = 4;
         public double OrganizationalDegree = 0.15;
@@ -26,13 +26,12 @@ namespace Seed.Test.OperationStructure
         public OperationFixture()
         {
             Configuration = new Configuration();
-            Configuration.WithOption(new TransitionMatrixParameter() { Lambda = 2, OrganizationalDegree = 0.15 });
-            Configuration.WithOption(new MaterialStructureParameter() { ComplexityRatio = 3.1, ReuseRatio = 1.7, NumberOfSalesMaterials = 8, VerticalIntegration = 4 });
-            Configuration.WithOption(Configuration.ReadFromFile<ResourceGroupParameter>("ExsampleResources.json"));
+            Configuration.WithOption(Configuration.ReadFromFile<MaterialConfig>("MaterialConfig.json"));
+            Configuration.WithOption(Configuration.ReadFromFile<ResourceConfig>("ResourceConfig.json"));
             var generator = new TransitionMatrixGenerator(Configuration);
             TransitionMatrix = generator.Generate();
-            
-            ResourceGroups = ConfigurationBase.CreateResourceGroups();
+
+            ResourceConfig = ConfigurationBase.CreateResourceConfig();
         }
 
         public MaterialNode[] CreateMaterials(int quantity)

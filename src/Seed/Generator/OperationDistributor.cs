@@ -10,14 +10,19 @@ namespace Seed.Generator
     public class OperationDistributor : IOperationDistributor
     {
         private RandomizerCollection _randomizerCollection;
-        private ResourceGroupParameter _resourceGroups;
+        private ResourceConfig _resourceGroups;
+        private IWithOperationsInUse _operationsInUse;
         private bool _withSourceAndSink;
         private TransitionMatrix _matrix { get; set; }
         private int Source { get; set; }
         public double[,] TargetTransitions { get; private set; }
 
-        public OperationDistributor(TransitionMatrix matrix, RandomizerCollection randomizerCollection, ResourceGroupParameter resourceGroups)
+        public OperationDistributor(TransitionMatrix matrix
+                                    , RandomizerCollection randomizerCollection
+                                    , ResourceConfig resourceGroups
+                                    , IWithOperationsInUse operationsInUse)
         {
+            _operationsInUse = operationsInUse;
             _withSourceAndSink = false;
             _randomizerCollection = randomizerCollection;
             _resourceGroups = resourceGroups;
@@ -69,7 +74,7 @@ namespace Seed.Generator
                                                             , Duration = customDuration };
                 node.Operations.Add(operation);
 
-                Materials.Operations.Add(operation);
+                _operationsInUse.Operations.Add(operation);
                 Source = targetResourceIndex;
             }
         }

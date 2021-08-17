@@ -1,5 +1,7 @@
 ﻿using Seed.Distributions;
 using Seed.Generator;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -37,8 +39,11 @@ namespace Seed.Test.OperationStructure
                                                 .WithOperationDuration(new RandomizerLogNormal(Randomizer.Next(int.MaxValue)))
                                                 .WithOperationAmount(new RandomizerBinominial(Randomizer.Next(int.MaxValue)))
                                                 .Build();
-
-            var OperationDistributor = new OperationDistributor(_operationFixture.TransitionMatrix, randomizerCollection, _operationFixture.ResourceGroups);
+            var material = new Materials();
+            var OperationDistributor = new OperationDistributor(_operationFixture.TransitionMatrix
+                                                                , randomizerCollection
+                                                                , _operationFixture.ResourceConfig
+                                                                , material);
             var materials = _operationFixture.CreateMaterials(numberOfOperations);
             
             _operationGenerator = new OperationGenerator(OperationDistributor, materials);
@@ -54,8 +59,8 @@ namespace Seed.Test.OperationStructure
           
 
             var og = generatedOperationsMatrix.GetOrganizationalDegree();
-            _numberOfOperationsCreated = Materials.Operations.Count;
-            var group = Materials.Operations.GroupBy(x => new { x.Node.Id }).Select(g => new { Key = g.Key, Count = g.Count() });
+            _numberOfOperationsCreated = material.Operations.Count;
+            var group = material.Operations.GroupBy(x => new { x.Node.Id }).Select(g => new { Key = g.Key, Count = g.Count() });
             var average = group.Average(x => x.Count);
 
             WriteIf(withOut, _numberOfOperationsCreated + " Operations created");
@@ -65,7 +70,7 @@ namespace Seed.Test.OperationStructure
             _averageOg.Add(og);
             
             Assert.InRange(og, _operationFixture.OrganizationalDegree - 0.1, _operationFixture.OrganizationalDegree + 0.1);
-            Assert.True(Materials.Operations.TrueForAll(x => x.Duration.TotalSeconds != 0));
+            Assert.True(material.Operations.TrueForAll(x => x.Duration.TotalSeconds != 0));
         }
 
 

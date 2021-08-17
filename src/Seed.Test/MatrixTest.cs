@@ -39,8 +39,8 @@ namespace Seed.Test
         {
             var config = new Configuration();
             var transition = new TransitionMatrixParameter() { Lambda = 2, OrganizationalDegree = 0.15 };
-            config.WithOption(transition);
-            config.WithOption(Configuration.ReadFromFile<ResourceGroupParameter>("ExsampleResources.json"));
+            //config.WithOption(transition);
+            config.WithOption(Configuration.ReadFromFile<ResourceConfig>("ResourceConfig.json"));
 
             var generator = new TransitionMatrixGenerator(config);
             generator.Generate();

@@ -1,13 +1,15 @@
 ﻿
 using Seed.Generator;
-
 using System.Collections.Generic;
 
 namespace Seed.Data
 {
     public class MaterialNodeList: List<MaterialNode>
     {
-        public MaterialNodeList() : base() { }
+        IWithNodeInUse _nodeCollector;
+        public MaterialNodeList(IWithNodeInUse nodeCollector) : base() {
+            _nodeCollector = nodeCollector;
+        }
         private MaterialNode[] NodeStoreage { get; set; }
         public void SaveNodes()
         {
@@ -22,7 +24,7 @@ namespace Seed.Data
         {
             var node = this[0];
             this.RemoveAt(0);
-            Materials.NodesInUse.Add(node);
+            _nodeCollector.NodesInUse.Add(node);
             return node;
         }
         public int CountAll => NodeStoreage.Length;

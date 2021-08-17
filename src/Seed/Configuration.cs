@@ -1,9 +1,11 @@
 ﻿using Seed.Parameter;
-using Seed.Parameter.Operation;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Seed
 {
-    public class Configuration : Dictionary<string, IParameter>
+    public class Configuration : Dictionary<string, object>
     {
         public static Configuration Create(IParameter[] args)
         {
@@ -33,7 +35,7 @@ namespace Seed
 
         public T Get<T>()
         {
-            if (this.TryGetValue(key: typeof(T).Name, value: out IParameter value))
+            if (this.TryGetValue(key: typeof(T).Name, value: out object value))
                 return (T)value;
             
             throw new ArgumentException($"{typeof(T).Name}  Not found");

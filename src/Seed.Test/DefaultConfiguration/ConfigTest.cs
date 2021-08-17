@@ -36,7 +36,7 @@ namespace Seed.Test.DefaultConfiguration
         [Fact]
         public void ExporterTest()
         {
-            var rsg = ConfigurationBase.CreateResourceGroups();
+            var rsg = ConfigurationBase.CreateResourceConfig();
             var outJson = System.Text.Json.JsonSerializer.Serialize(rsg);
             _out.WriteLine(outJson);
             File.WriteAllText(Environment.CurrentDirectory + @"\Config\resources.json", outJson);
@@ -50,7 +50,7 @@ namespace Seed.Test.DefaultConfiguration
         [InlineData(3, 1)]
         public void TestFallBackFromImport(int resourceIndex, int toolIndex)
         {
-            var resourceGroups = Configuration.ReadFromFile<ResourceGroupParameter>("ExsampleResources.json");
+            var resourceGroups = Configuration.ReadFromFile<ResourceGroupParameter>("ResourceConfig.json");
             var meanToolOperationFallback = resourceGroups.GetMeanOperationDurationFor(resourceIndex, toolIndex);
             var varianeToolOperationFallback = resourceGroups.GetVarianceOperationDurationFor(resourceIndex, toolIndex);
             Assert.Equal(TimeSpan.FromSeconds(300), meanToolOperationFallback);
@@ -67,10 +67,10 @@ namespace Seed.Test.DefaultConfiguration
             var config = ConfigurationBase.Default();
             var outJson = System.Text.Json.JsonSerializer.Serialize(config);
             _out.WriteLine(outJson);
-            File.WriteAllText(Environment.CurrentDirectory + @"\Config\config.json", outJson);
+            File.WriteAllText(Environment.CurrentDirectory + @"\Config\MaterialConfig.json", outJson);
             Assert.NotNull(outJson);
             Assert.NotEmpty(outJson);
-            Assert.True(File.Exists(Environment.CurrentDirectory + @"\Config\config.json"));
+            Assert.True(File.Exists(Environment.CurrentDirectory + @"\Config\MaterialConfig.json"));
 
         }
     }
