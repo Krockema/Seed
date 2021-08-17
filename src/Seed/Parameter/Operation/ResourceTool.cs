@@ -1,7 +1,4 @@
-﻿using Seed.Parameter.Material;
-using System;
-
-namespace Seed.Parameter.Operation
+﻿namespace Seed.Parameter.Operation
 {
     public class ResourceTool
     {

@@ -1,8 +1,4 @@
-﻿using Seed.Parameter.Material;
-using System;
-using System.Collections.Generic;
-
-namespace Seed.Parameter.Operation
+﻿namespace Seed.Parameter.Operation
 {
     public class ResourceGroup
     {

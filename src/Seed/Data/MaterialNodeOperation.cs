@@ -8,7 +8,14 @@ namespace Seed.Data
 {
     public class MaterialNodeOperation
     {
-        public Guid Guid{ get; set; }
+        private static int IdCounter = 0;
+
+        public MaterialNodeOperation()
+        {
+            Id = IdCounter++;
+        }
+
+        public int Id { get; set; }
         public string Name { get; set; }
         public TimeSpan Duration { get; set;}
         public int SequenceNumber { get; set; }

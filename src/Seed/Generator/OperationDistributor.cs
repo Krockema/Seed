@@ -1,6 +1,7 @@
 ﻿using Seed.Data;
 using Seed.Distributions;
 using Seed.Matrix;
+using Seed.Parameter;
 using Seed.Parameter.Operation;
 using System;
 
@@ -9,13 +10,13 @@ namespace Seed.Generator
     public class OperationDistributor : IOperationDistributor
     {
         private RandomizerCollection _randomizerCollection;
-        private ResourceGroups _resourceGroups;
+        private ResourceGroupParameter _resourceGroups;
         private bool _withSourceAndSink;
         private TransitionMatrix _matrix { get; set; }
         private int Source { get; set; }
         public double[,] TargetTransitions { get; private set; }
 
-        public OperationDistributor(TransitionMatrix matrix, RandomizerCollection randomizerCollection, ResourceGroups resourceGroups)
+        public OperationDistributor(TransitionMatrix matrix, RandomizerCollection randomizerCollection, ResourceGroupParameter resourceGroups)
         {
             _withSourceAndSink = false;
             _randomizerCollection = randomizerCollection;
@@ -61,8 +62,7 @@ namespace Seed.Generator
                 
                 var customDuration = TimeSpan.FromSeconds(_randomizerCollection.OperationDuration.NextWithMeanAndVariance(averageDuration, averageDuration * varianceDuration));
 
-                var operation = new MaterialNodeOperation { Guid = Guid.NewGuid()
-                                                            , Name = "Operation " + node.Operations.Count + 1
+                var operation = new MaterialNodeOperation { Name = "Operation " + node.Operations.Count + 1
                                                             , Node = node
                                                             , TargetResourceIdent = Source
                                                             , SequenceNumber = node.Operations.Count + 1

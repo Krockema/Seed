@@ -1,7 +1,6 @@
 ﻿using Seed.Generator;
-using Seed.Parameter.Material;
-using System;
-using System.Linq;
+using Seed.Parameter;
+using Seed.Parameter.TransitionMatrix;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -10,20 +9,15 @@ namespace Seed.Test.MaterialStructure
     public class ConvergingMaterials : IClassFixture<MaterialFixture>
     {
         private MaterialFixture _materialFixture;
-        private VerticalIntegration _verticalIntegration = new (4);
-        private ComplexityRatio _complexityRatio = new (4);
-        private ReuseRatio _reuseRatio = new (2);
-        private SalesMaterial _salesMaterial = new (8);
         private ITestOutputHelper _out;
-
+        private TransitionMatrixParameter tmp = new TransitionMatrixParameter() { Lambda = 2, OrganizationalDegree = 0.15 };
+        private MaterialStructureParameter msp = new MaterialStructureParameter() { ComplexityRatio = 4, ReuseRatio = 2, NumberOfSalesMaterials = 8, VerticalIntegration = 4 };
         public ConvergingMaterials(MaterialFixture materialFixture, ITestOutputHelper outputHelper)
         {
             _out = outputHelper;
             _materialFixture = materialFixture;
-            _materialFixture.Configuration.ReplaceOption(_verticalIntegration);
-            _materialFixture.Configuration.ReplaceOption(_complexityRatio);
-            _materialFixture.Configuration.ReplaceOption(_reuseRatio);
-            _materialFixture.Configuration.ReplaceOption(_salesMaterial);
+            _materialFixture.Configuration.ReplaceOption(tmp);
+            _materialFixture.Configuration.ReplaceOption(msp);
             _materialFixture.GenerateMaterials();
         }
 
@@ -36,9 +30,9 @@ namespace Seed.Test.MaterialStructure
             {
                 var expected = 0.0;
                 if (materialHirarchie.Level == 1)
-                    expected = purchaseMaterials / (Math.Pow((double)_complexityRatio.Value / _reuseRatio.Value, _verticalIntegration.Value - 1));
+                    expected = purchaseMaterials / (Math.Pow((double)msp.ComplexityRatio / msp.ReuseRatio, msp.VerticalIntegration - 1));
                 else 
-                    expected = salesMaterials * (Math.Pow((double)_complexityRatio.Value / _reuseRatio.Value, materialHirarchie.Level - 1));
+                    expected = salesMaterials * (Math.Pow((double)msp.ComplexityRatio / msp.ReuseRatio, materialHirarchie.Level - 1));
 
                 Assert.Equal(Math.Round(expected, 0), Materials.NodesInUse.Count(y => y.InitialLevel + 1 == materialHirarchie.Level));
             }
@@ -71,7 +65,7 @@ namespace Seed.Test.MaterialStructure
 
             foreach (var node in sales)
             {
-                _out.WriteLine($"> {node.InitialLevel} {node.Guid}");
+                _out.WriteLine($"> {node.InitialLevel} {node.Id}");
                 _materialFixture.solveStructure(node.IncomingEdges.ToArray(), 2);
             }
         }
@@ -83,15 +77,15 @@ namespace Seed.Test.MaterialStructure
             var totalMats = allMats.Count();
             var matsWithSuccessor = allMats.Sum(x => x.OutgoingEdges.Count);
             var matsSalesOnly = _materialFixture.Materials.NodesSalesOnly().Count();
-            var multipleUse = (double)matsWithSuccessor / (totalMats- matsSalesOnly);
+            var multipleUse = (double)matsWithSuccessor / (totalMats - matsSalesOnly);
             _out.WriteLine($" Multiple Use : {multipleUse}");
-            Assert.Equal(_reuseRatio.Value, multipleUse);
+            Assert.Equal(msp.ReuseRatio, multipleUse);
 
             var matsWithPredecessor = allMats.Sum(x => x.IncomingEdges.Count);
             var matsPurchaseOnly = _materialFixture.Materials.NodesPurchaseOnly().Count();
             var degreeOfComplexity = (double)matsWithPredecessor / (totalMats- matsPurchaseOnly);
             _out.WriteLine($" Complexity : {degreeOfComplexity}");
-            Assert.Equal(_complexityRatio.Value, degreeOfComplexity);
+            Assert.Equal(msp.ComplexityRatio, degreeOfComplexity);
         } 
     }
 }

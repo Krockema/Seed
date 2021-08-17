@@ -1,4 +1,5 @@
-﻿using Seed.Parameter.Operation;
+﻿using Seed.Parameter;
+using Seed.Parameter.Operation;
 using System;
 using System.IO;
 using Xunit;
@@ -27,8 +28,8 @@ namespace Seed.Test.DefaultConfiguration
         [Fact]
         public void ImporterTest()
         {   
-            var jsonText = File.ReadAllText(Environment.CurrentDirectory + @"\Config\DefaultResources.json");
-            var inJson = System.Text.Json.JsonSerializer.Deserialize<ResourceGroups>(jsonText);
+            var jsonText = File.ReadAllText(Environment.CurrentDirectory + @"\Config\ExsampleResources.json");
+            var inJson = System.Text.Json.JsonSerializer.Deserialize<ResourceGroupParameter>(jsonText);
             Assert.NotNull(inJson);
         }
 
@@ -41,6 +42,7 @@ namespace Seed.Test.DefaultConfiguration
             File.WriteAllText(Environment.CurrentDirectory + @"\Config\resources.json", outJson);
             Assert.NotNull(outJson);
             Assert.NotEmpty(outJson);
+            Assert.True(File.Exists(Environment.CurrentDirectory + @"\Config\resources.json"));
         }
 
         [Theory]
@@ -48,16 +50,28 @@ namespace Seed.Test.DefaultConfiguration
         [InlineData(3, 1)]
         public void TestFallBackFromImport(int resourceIndex, int toolIndex)
         {
-            var jsonText = File.ReadAllText(Environment.CurrentDirectory + @"\Config\ExsampleResources.json");
-            var inJson = System.Text.Json.JsonSerializer.Deserialize<ResourceGroups>(jsonText);
-            var meanToolOperationFallback = inJson.GetMeanOperationDurationFor(resourceIndex, toolIndex);
-            var varianeToolOperationFallback = inJson.GetVarianceOperationDurationFor(resourceIndex, toolIndex);
+            var resourceGroups = Configuration.ReadFromFile<ResourceGroupParameter>("ExsampleResources.json");
+            var meanToolOperationFallback = resourceGroups.GetMeanOperationDurationFor(resourceIndex, toolIndex);
+            var varianeToolOperationFallback = resourceGroups.GetVarianceOperationDurationFor(resourceIndex, toolIndex);
             Assert.Equal(TimeSpan.FromSeconds(300), meanToolOperationFallback);
             Assert.Equal(0.2, varianeToolOperationFallback);
 
-            Assert.Equal(100.0, inJson.GetCostRateSetupFor(resourceIndex));
-            Assert.Equal(60.0, inJson.GetCostRateProcessingFor(resourceIndex));
-            Assert.Equal(10.0, inJson.GetCostRateIdleTimeFor(resourceIndex));
+            Assert.Equal(100.0, resourceGroups.GetCostRateSetupFor(resourceIndex));
+            Assert.Equal(60.0, resourceGroups.GetCostRateProcessingFor(resourceIndex));
+            Assert.Equal(10.0, resourceGroups.GetCostRateIdleTimeFor(resourceIndex));
+        }
+
+        [Fact] 
+        public void WriteConfig()
+        {
+            var config = ConfigurationBase.Default();
+            var outJson = System.Text.Json.JsonSerializer.Serialize(config);
+            _out.WriteLine(outJson);
+            File.WriteAllText(Environment.CurrentDirectory + @"\Config\config.json", outJson);
+            Assert.NotNull(outJson);
+            Assert.NotEmpty(outJson);
+            Assert.True(File.Exists(Environment.CurrentDirectory + @"\Config\config.json"));
+
         }
     }
 }

@@ -2,25 +2,21 @@
 using Seed.Matrix;
 using Seed.Parameter;
 using Seed.Parameter.TransitionMatrix;
-using System;
 
 namespace Seed.Generator
 {
     public class TransitionMatrixGenerator
-    { 
-        public MatrixSize Size { get; set; }
-        public Lambda Lambda { get; set; }
-        
-        public OrganizationalDegree OrganizationalDegree{ get; set; }
-        public IRandomizer Randomizer { get; }
+    {
+        private TransitionMatrixParameter transitionMatrixParameter { get; }
+        double OrganizationalDegree => transitionMatrixParameter.OrganizationalDegree;
+        double Lambda => transitionMatrixParameter.Lambda;
+        int Size { get; } 
         public TransitionMatrix TransitionMatrix { get; set; }
 
-        public TransitionMatrixGenerator(Configuration config, IRandomizer randomizer)
+        public TransitionMatrixGenerator(Configuration config)
         {
-            Size = config.Get<MatrixSize>();
-            OrganizationalDegree = config.Get<OrganizationalDegree>();
-            Lambda = config.Get<Lambda>();
-            Randomizer = randomizer;
+            transitionMatrixParameter = config.Get<TransitionMatrixParameter>();
+            Size = config.Get<ResourceGroupParameter>().ResourceGroupList.Count;
         }
 
 
@@ -35,11 +31,11 @@ namespace Seed.Generator
 
            
             // Initialization Matrix B depending on organizational Degree of Matrix A
-            var matrixB = (TransitionMatrix.GetOrganizationalDegree() > OrganizationalDegree.Value)
-                ? new TransitionMatrix(Size, new MatrixNormalInitializer(Size.Value))
-                : new TransitionMatrix(Size, new MatrixLeftShiftIdentityInitializer(Size.Value));
+            var matrixB = (TransitionMatrix.GetOrganizationalDegree() > OrganizationalDegree)
+                ? new TransitionMatrix(Size, new MatrixNormalInitializer(Size))
+                : new TransitionMatrix(Size, new MatrixLeftShiftIdentityInitializer(Size));
 
-            while (Math.Abs(TransitionMatrix.GetOrganizationalDegree()-OrganizationalDegree.Value) > 0.001)
+            while (Math.Abs(TransitionMatrix.GetOrganizationalDegree()- OrganizationalDegree) > 0.001)
             {
                 //matrixA
                 var matrixC = TransitionMatrix.HalfAdd(matrixB);
@@ -64,7 +60,7 @@ namespace Seed.Generator
         /// <returns></returns>
         private bool GetPreSign(TransitionMatrix matrix)
         {
-            return matrix.GetOrganizationalDegree() - OrganizationalDegree.Value > 0;
+            return matrix.GetOrganizationalDegree() - OrganizationalDegree > 0;
         }
     }
 }

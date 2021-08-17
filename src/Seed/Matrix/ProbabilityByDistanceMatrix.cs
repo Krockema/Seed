@@ -14,9 +14,9 @@ namespace Seed.Matrix
         /// </summary>
         /// <param name="size"></param>
         /// <param name="initializer"></param>
-        public ProbabilityByDistanceMatrix(MatrixSize size, IMatrixInitializer initializer)
+        public ProbabilityByDistanceMatrix(int size, IMatrixInitializer initializer)
         {
-            _matrix = _matrixBuilder.Dense(size.Value, size.Value, initializer.CellValue);
+            _matrix = _matrixBuilder.Dense(size, size, initializer.CellValue);
         }
 
         public Vector<double> GetValuesFor(int rowIndex)

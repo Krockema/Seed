@@ -19,8 +19,8 @@ namespace Seed.Test
         [Fact]
         public void IsUniform()
         {
-            var size = new MatrixSize(4);
-            var matrix = new TransitionMatrix(size, new MatrixLeftShiftIdentityInitializer(size.Value));
+            var size = 4;
+            var matrix = new TransitionMatrix(size, new MatrixLeftShiftIdentityInitializer(size));
             var degree = matrix.GetOrganizationalDegree(); 
             _out.WriteLine(matrix.GetMatrix.ToString());
             Assert.Equal(1, degree);
@@ -29,7 +29,7 @@ namespace Seed.Test
         [Fact]
         public void IsNormal()
         {
-            var matrix = new TransitionMatrix(new MatrixSize(4), new MatrixNormalInitializer(4));
+            var matrix = new TransitionMatrix(4, new MatrixNormalInitializer(4));
             var degree = matrix.GetOrganizationalDegree(); 
             Assert.Equal(0, degree);
         }
@@ -38,12 +38,11 @@ namespace Seed.Test
         public void Transition()
         {
             var config = new Configuration();
-            config.WithOption(new MatrixSize(4));
-            config.WithOption(new OrganizationalDegree(0.15));
-            config.WithOption(new Lambda(2));
-            IRandomizer rnd = new RandomizerBase(1337);
+            var transition = new TransitionMatrixParameter() { Lambda = 2, OrganizationalDegree = 0.15 };
+            config.WithOption(transition);
+            config.WithOption(Configuration.ReadFromFile<ResourceGroupParameter>("ExsampleResources.json"));
 
-            var generator = new TransitionMatrixGenerator(config, rnd);
+            var generator = new TransitionMatrixGenerator(config);
             generator.Generate();
 
             _out.WriteLine("Achieved OrganizationalDegree: " +  generator.TransitionMatrix.GetOrganizationalDegree());
@@ -55,7 +54,7 @@ namespace Seed.Test
         public void IsAscending()
         {
             var size = 5;
-            var matrix = new ProbabilityByDistanceMatrix(new MatrixSize(size), new MatrixProbabilityByDistanceInitializerAscending(size));
+            var matrix = new ProbabilityByDistanceMatrix(size, new MatrixProbabilityByDistanceInitializerAscending(size));
             _out.WriteLine(matrix.GetMatrix.ToString());
             Assert.Equal(4, matrix.GetRowJump(2, 0.55));
             Assert.Equal(3, matrix.GetRowJump(2, 0.4));
@@ -63,7 +62,7 @@ namespace Seed.Test
         [Fact]
         public void IsDescending()
         {
-            var matrix = new ProbabilityByDistanceMatrix(new MatrixSize(10), new MatrixProbabilityByDistanceInitializerDescending());
+            var matrix = new ProbabilityByDistanceMatrix(10, new MatrixProbabilityByDistanceInitializerDescending());
             _out.WriteLine(matrix.GetMatrix.ToString());
             _out.WriteLine(matrix.GetValuesFor(9).ToString());
             var targetRow = matrix.GetRowJump(9, 0.2);

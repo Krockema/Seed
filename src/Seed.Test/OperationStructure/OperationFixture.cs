@@ -18,23 +18,21 @@ namespace Seed.Test.OperationStructure
         public RandomizerBase Randomizer { get; } = new RandomizerBase(1337);
 
         
-        public ResourceGroups ResourceGroups;
+        public ResourceGroupParameter ResourceGroups;
         public TransitionMatrix TransitionMatrix;
-        public MatrixSize MatrixSize = new (4);
-        public OrganizationalDegree OrganizationalDegree = new (0.15);
-        public Lambda Lambda = new (2);
+        public int MatrixSize = 4;
+        public double OrganizationalDegree = 0.15;
+        public double Lambda = 2;
         public OperationFixture()
         {
-            this.Configuration.WithOption(MatrixSize);
-            this.Configuration.WithOption(OrganizationalDegree);
-            this.Configuration.WithOption(Lambda);
-
-            var generator = new TransitionMatrixGenerator(Configuration, Randomizer);
+            Configuration = new Configuration();
+            Configuration.WithOption(new TransitionMatrixParameter() { Lambda = 2, OrganizationalDegree = 0.15 });
+            Configuration.WithOption(new MaterialStructureParameter() { ComplexityRatio = 3.1, ReuseRatio = 1.7, NumberOfSalesMaterials = 8, VerticalIntegration = 4 });
+            Configuration.WithOption(Configuration.ReadFromFile<ResourceGroupParameter>("ExsampleResources.json"));
+            var generator = new TransitionMatrixGenerator(Configuration);
             TransitionMatrix = generator.Generate();
             
             ResourceGroups = ConfigurationBase.CreateResourceGroups();
-            
-
         }
 
         public MaterialNode[] CreateMaterials(int quantity)

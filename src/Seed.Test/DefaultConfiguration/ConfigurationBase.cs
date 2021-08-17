@@ -1,15 +1,18 @@
-﻿using Seed.Parameter.Operation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Seed.Parameter;
+using Seed.Parameter.Operation;
+using Seed.Parameter.TransitionMatrix;
 
 namespace Seed.Test.DefaultConfiguration
 {
     public class ConfigurationBase
     {
-        public static ResourceGroups CreateResourceGroups()
+        public static Configuration Default() {
+            var config = new Configuration(); 
+            config.WithOption(new TransitionMatrixParameter() { Lambda = 2, OrganizationalDegree = 0.15 });
+            config.WithOption(new MaterialStructureParameter() { ComplexityRatio = 4, ReuseRatio = 2, NumberOfSalesMaterials = 8, VerticalIntegration = 4 });
+            return config;
+        }
+        public static ResourceGroupParameter CreateResourceGroups()
         {
             var rsSaw = new ResourceGroup("Saw")
                 .WithResourceuQuantity(2)
@@ -45,7 +48,7 @@ namespace Seed.Test.DefaultConfiguration
                     new ResourceTool("Coloring"),
                 });
 
-            return new ResourceGroups().WithResourceGroup(new List<ResourceGroup> { rsSaw, rsDrill, rsAssembly, rsColoring })
+            return new ResourceGroupParameter().WithResourceGroup(new List<ResourceGroup> { rsSaw, rsDrill, rsAssembly, rsColoring })
                                                 .WithDefaultOperationsDurationMean(TimeSpan.FromSeconds(300))
                                                 .WithDefaultOperationsDurationVariance(0.20)
                                                 .WithDefaultOperationsAmountMean(4)

@@ -22,7 +22,7 @@ namespace Seed.Test.MaterialStructure
                 foreach (var edge in edges)
                 {
                     var intend = "".PadLeft(lvl, '-');
-                    System.Diagnostics.Debug.WriteLine(intend + $"> {edge.From.InitialLevel} {edge.From.Guid}");
+                    System.Diagnostics.Debug.WriteLine(intend + $"> {edge.From.InitialLevel} {edge.From.Id}");
                     solveStructure(edge.From.IncomingEdges.ToArray(), lvl + 2);
                 }
             };

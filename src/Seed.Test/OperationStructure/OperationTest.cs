@@ -1,8 +1,5 @@
 ﻿using Seed.Distributions;
 using Seed.Generator;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -58,7 +55,7 @@ namespace Seed.Test.OperationStructure
 
             var og = generatedOperationsMatrix.GetOrganizationalDegree();
             _numberOfOperationsCreated = Materials.Operations.Count;
-            var group = Materials.Operations.GroupBy(x => new { x.Node.Guid }).Select(g => new { Key = g.Key, Count = g.Count() });
+            var group = Materials.Operations.GroupBy(x => new { x.Node.Id }).Select(g => new { Key = g.Key, Count = g.Count() });
             var average = group.Average(x => x.Count);
 
             WriteIf(withOut, _numberOfOperationsCreated + " Operations created");
@@ -67,7 +64,7 @@ namespace Seed.Test.OperationStructure
             WriteIf(withOut, "Organizational Degree on Generated Materials : " + og);
             _averageOg.Add(og);
             
-            Assert.InRange(og, _operationFixture.OrganizationalDegree.Value - 0.1, _operationFixture.OrganizationalDegree.Value + 0.1);
+            Assert.InRange(og, _operationFixture.OrganizationalDegree - 0.1, _operationFixture.OrganizationalDegree + 0.1);
             Assert.True(Materials.Operations.TrueForAll(x => x.Duration.TotalSeconds != 0));
         }
 
@@ -97,8 +94,7 @@ namespace Seed.Test.OperationStructure
         [Fact]
         public void ProbabilityMatrixFromTransitionMatrix()
         {
-            IRandomizer rnd = new RandomizerBase(1337);
-            var generator = new TransitionMatrixGenerator(_operationFixture.Configuration, rnd);
+            var generator = new TransitionMatrixGenerator(_operationFixture.Configuration);
             generator.Generate();
             var matrix = generator.TransitionMatrix.TransformToProbability();
             _outputHelper.WriteLine(matrix.ToString());

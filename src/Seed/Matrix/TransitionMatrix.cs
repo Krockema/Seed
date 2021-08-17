@@ -26,9 +26,9 @@ namespace Seed.Matrix
         /// </summary>
         /// <param name="size"></param>
         /// <param name="initializer"></param>
-        public TransitionMatrix(MatrixSize size, IMatrixInitializer initializer)
+        public TransitionMatrix(int size, IMatrixInitializer initializer)
         {
-            _matrix = _matrixBuilder.Dense(size.Value, size.Value, initializer.CellValue);
+            _matrix = _matrixBuilder.Dense(size, size, initializer.CellValue);
             TransitionInitializer = new MatrixProbabilityTransitionInitializer();
         }
         public TransitionMatrix(double[,] matrix)

@@ -9,9 +9,9 @@ namespace Seed.Matrix
     /// </summary>
     public class MatrixPoissonInitializer : IMatrixInitializer
     {
-        private Lambda Lambda { get; set; }
+        private double Lambda { get; set; }
 
-        public MatrixPoissonInitializer(Lambda lambda)
+        public MatrixPoissonInitializer(double lambda)
         {
             Lambda = lambda;
         }
@@ -20,11 +20,11 @@ namespace Seed.Matrix
         {
             if (i <= j)
             {
-                return Math.Pow(Lambda.Value, j - i) / SpecialFunctions.Factorial(j - i);
+                return Math.Pow(Lambda, j - i) / SpecialFunctions.Factorial(j - i);
             }
             else
             {
-                return Math.Pow(Lambda.Value, i - j) / (2 * SpecialFunctions.Factorial(i - j));
+                return Math.Pow(Lambda, i - j) / (2 * SpecialFunctions.Factorial(i - j));
             }
         }
 

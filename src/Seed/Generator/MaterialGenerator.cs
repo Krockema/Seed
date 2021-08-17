@@ -1,32 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using Seed.Data;
+﻿using Seed.Data;
 using Seed.Distributions;
 using Seed.Matrix;
 using Seed.Parameter;
-using Seed.Parameter.Material;
-using Seed.Parameter.TransitionMatrix;
 
 namespace Seed.Generator
 {
     public class MaterialGenerator
     {
         public Materials Materials { get; init; } = new();
+        private MaterialStructureParameter materialStructureParameter;
         private Queue<MaterialEdge> _unusedEdges = new Queue<MaterialEdge>();
         private readonly List<MaterialEdge> _edges = new ();
         private readonly IRandomizer _randomizer;
-        private readonly int _verticalIntegration;
-        private readonly int _complexityRatio;
-        private readonly int _reuseRatio;
-        private readonly int _salesMaterial;
+        private int _verticalIntegration => materialStructureParameter.VerticalIntegration;
+        private double _complexityRatio => materialStructureParameter.ComplexityRatio;
+        private double _reuseRatio => materialStructureParameter.ReuseRatio;
+        private int _salesMaterial => materialStructureParameter.NumberOfSalesMaterials;
         public MaterialGenerator(Configuration cfg, IRandomizer randomizer)
         {
-            _verticalIntegration = cfg.Get<VerticalIntegration>().Value;
-            _complexityRatio = cfg.Get<ComplexityRatio>().Value;
-            _reuseRatio = cfg.Get<ReuseRatio>().Value;
-            _salesMaterial = cfg.Get<SalesMaterial>().Value;
+            materialStructureParameter = cfg.Get<MaterialStructureParameter>();
+            
             _randomizer = randomizer;
 
             var resultingSalesMaterial = Math.Pow(_complexityRatio / _reuseRatio, _verticalIntegration - 1);
@@ -102,8 +95,8 @@ namespace Seed.Generator
             for (int level = Materials.Count - 1; level >= 2; level--)
             {
                 var currentLevelNodesWithoutEdges = Materials[level].Nodes;
-                var decendingProbabilityMatrix = new ProbabilityByDistanceMatrix
-                    (new MatrixSize(Materials.Count)
+                var decendingProbabilityMatrix = new ProbabilityByDistanceMatrix(
+                     Materials.Count
                     , new MatrixProbabilityByDistanceInitializerDescending());
 
                 while (currentLevelNodesWithoutEdges.Count > 0)
@@ -143,7 +136,7 @@ namespace Seed.Generator
                 var currentLevelNodesWithoutEdges = Materials[level].Nodes;
                 var probabilityMatrix =
                     new ProbabilityByDistanceMatrix
-                        (new MatrixSize(stages), new MatrixProbabilityByDistanceInitializerAscending(stages));
+                        (stages, new MatrixProbabilityByDistanceInitializerAscending(stages));
 
                 while (currentLevelNodesWithoutEdges.Count > 0)
                 {
@@ -165,7 +158,7 @@ namespace Seed.Generator
                 return;
 
             var decendingProbabilityMatrix = new ProbabilityByDistanceMatrix
-                (new MatrixSize(Materials.Count)
+                (Materials.Count
                 , new MatrixProbabilityByDistanceInitializerDescending());
             
             // caus we are looking from top to bottom, lower than purchase is not possible

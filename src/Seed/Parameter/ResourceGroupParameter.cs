@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Seed.Parameter.Operation;
 
-namespace Seed.Parameter.Operation
+namespace Seed.Parameter
 {
-    public class ResourceGroups : Option<string>
+    public class ResourceGroupParameter : IParameter
     {
-        public ResourceGroups() : base ("ResourceConfiguration") {
+        public ResourceGroupParameter() 
+        {
             DefaultOperationDurationDistributionParameter = new();
             DefaultOperationAmountDistributionParameter = new();
             ResourceGroupList = new();
@@ -77,27 +77,27 @@ namespace Seed.Parameter.Operation
                 : DefaultOperationDurationDistributionParameter.Variance;    // No further check needed as int is 0 anyway
         }
 
-        public ResourceGroups WithDefaultOperationsDurationVariance(double varianceInPercent)
+        public ResourceGroupParameter WithDefaultOperationsDurationVariance(double varianceInPercent)
         {
             this.DefaultOperationDurationDistributionParameter.Variance = varianceInPercent;
             return this;
         }
-        public ResourceGroups WithDefaultOperationsDurationMean(TimeSpan mean)
+        public ResourceGroupParameter WithDefaultOperationsDurationMean(TimeSpan mean)
         {
             this.DefaultOperationDurationDistributionParameter.Mean = mean.TotalSeconds;
             return this;
         }
-        public ResourceGroups WithDefaultOperationsAmountVariance(double varianceInPercent)
+        public ResourceGroupParameter WithDefaultOperationsAmountVariance(double varianceInPercent)
         {
             this.DefaultOperationAmountDistributionParameter.Variance = varianceInPercent;
             return this;
         }
-        public ResourceGroups WithDefaultOperationsAmountMean(int quantity)
+        public ResourceGroupParameter WithDefaultOperationsAmountMean(int quantity)
         {
             this.DefaultOperationAmountDistributionParameter.Mean = quantity;
             return this;
         }
-        public ResourceGroups WithResourceGroup(List<ResourceGroup> groups)
+        public ResourceGroupParameter WithResourceGroup(List<ResourceGroup> groups)
         {
             this.ResourceGroupList.AddRange(groups); 
             return this;
