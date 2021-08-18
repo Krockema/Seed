@@ -1,0 +1,13 @@
+{
+  "StructureParameter": {
+    "ComplexityRatio": 4,
+    "ReuseRatio": 2,
+    "NumberOfSalesMaterials": 100,
+    "VerticalIntegration": 4,
+    "Seed": 1337
+  },
+  "TransitionMatrixParameter": {
+    "Lambda": 2,
+    "OrganizationalDegree": 0.15
+  }
+}
