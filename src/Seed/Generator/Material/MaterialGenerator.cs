@@ -2,6 +2,9 @@
 using Seed.Distributions;
 using Seed.Matrix;
 using Seed.Parameter;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Seed.Generator.Material
 {

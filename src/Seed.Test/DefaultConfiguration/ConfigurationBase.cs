@@ -1,6 +1,8 @@
 ﻿using Seed.Parameter;
 using Seed.Parameter.Operation;
 using Seed.Parameter.TransitionMatrix;
+using System;
+using System.Collections.Generic;
 
 namespace Seed.Test.DefaultConfiguration
 {

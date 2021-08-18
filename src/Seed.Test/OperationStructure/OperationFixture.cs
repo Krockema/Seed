@@ -4,6 +4,8 @@ using Seed.Generator.Operation;
 using Seed.Matrix;
 using Seed.Parameter;
 using Seed.Test.DefaultConfiguration;
+using System;
+using System.Linq;
 
 namespace Seed.Test.OperationStructure
 {

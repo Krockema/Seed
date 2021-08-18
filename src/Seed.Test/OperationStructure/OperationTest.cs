@@ -1,6 +1,8 @@
 ﻿using Seed.Distributions;
 using Seed.Generator.Material;
 using Seed.Generator.Operation;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
