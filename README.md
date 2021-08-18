@@ -14,5 +14,3 @@ Questions to answer:
 - [ ] Start for Flowshop always M1 ? (it will create a static amount of operations n that is equal to amout of resources for all materials) 
 - [ ] Forbid to jump from source to sink ? 
 - [ ] Implement Transition Matrix with source and sink
-
-
