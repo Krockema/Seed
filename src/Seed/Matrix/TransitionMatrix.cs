@@ -52,7 +52,7 @@ namespace Seed.Matrix
         /// <summary>
         /// Normalizes the rows to [0,1]
         /// </summary>
-        public void Normalize()
+        public TransitionMatrix Normalize()
         {
             foreach (var row in _matrix.EnumerateRowsIndexed())
             {
@@ -60,6 +60,7 @@ namespace Seed.Matrix
                 row.Item2.MapInplace(x => x / rowSum);
                 _matrix.SetRow(row.Item1, row.Item2);
             }
+            return this;
         }
         /// <summary>
         /// Calculate Organizational Degree

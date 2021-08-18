@@ -1,7 +1,4 @@
 ﻿using Seed.Parameter;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace Seed
 {
@@ -18,9 +15,9 @@ namespace Seed
             return s;
         }
 
-        public static T ReadFromFile<T>(string fileName)
+        public static T ReadFromFile<T>(string fileName) where T : IParameter
         {
-            var jsonText = File.ReadAllText(Environment.CurrentDirectory + $@"\Config\{fileName}");
+            var jsonText = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, @"Config", fileName));
             var inJson = System.Text.Json.JsonSerializer.Deserialize<T>(jsonText);
             return inJson;
         }
@@ -33,7 +30,7 @@ namespace Seed
             throw new ArgumentException($"Option {o.GetType().Name} already added");
         }
 
-        public T Get<T>()
+        public T Get<T>() where T : IParameter
         {
             if (this.TryGetValue(key: typeof(T).Name, value: out object value))
                 return (T)value;

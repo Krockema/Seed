@@ -1,8 +1,6 @@
 ﻿using Seed.Parameter;
 using Seed.Parameter.Operation;
 using Seed.Parameter.TransitionMatrix;
-using System;
-using System.Collections.Generic;
 
 namespace Seed.Test.DefaultConfiguration
 {
@@ -12,8 +10,8 @@ namespace Seed.Test.DefaultConfiguration
             var config = new Configuration(); 
             var mat = new MaterialConfig()
             {
-                MaterialStructure = new StructureParameter() { ComplexityRatio = 4, ReuseRatio = 2, NumberOfSalesMaterials = 8, VerticalIntegration = 4 },
-                OperationStructure = new TransitionMatrixParameter() { Lambda = 2, OrganizationalDegree = 0.15 }
+                StructureParameter = new StructureParameter() { ComplexityRatio = 4, ReuseRatio = 2, NumberOfSalesMaterials = 8, VerticalIntegration = 4 },
+                TransitionMatrixParameter = new TransitionMatrixParameter() { Lambda = 2, OrganizationalDegree = 0.15 }
             };
             config.WithOption(mat);            
             return config;

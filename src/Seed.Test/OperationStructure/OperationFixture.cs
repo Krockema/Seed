@@ -1,14 +1,9 @@
 ﻿using Seed.Data;
 using Seed.Distributions;
-using Seed.Generator;
+using Seed.Generator.Operation;
 using Seed.Matrix;
 using Seed.Parameter;
-using Seed.Parameter.Operation;
-using Seed.Parameter.TransitionMatrix;
 using Seed.Test.DefaultConfiguration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Seed.Test.OperationStructure
 {
@@ -28,9 +23,7 @@ namespace Seed.Test.OperationStructure
             Configuration = new Configuration();
             Configuration.WithOption(Configuration.ReadFromFile<MaterialConfig>("MaterialConfig.json"));
             Configuration.WithOption(Configuration.ReadFromFile<ResourceConfig>("ResourceConfig.json"));
-            var generator = new TransitionMatrixGenerator(Configuration);
-            TransitionMatrix = generator.Generate();
-
+            TransitionMatrix = TransitionMatrixGenerator.WithConfiguration(Configuration).Generate();
             ResourceConfig = ConfigurationBase.CreateResourceConfig();
         }
 

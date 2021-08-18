@@ -1,13 +1,12 @@
 ﻿using Seed.Data;
 using Seed.Distributions;
+using Seed.Generator.Material;
 using Seed.Matrix;
 using Seed.Parameter;
-using Seed.Parameter.Operation;
-using System;
 
-namespace Seed.Generator
+namespace Seed.Generator.Operation
 {
-    public class OperationDistributor : IOperationDistributor
+    public class OperationDistributor : IOperationDistributor, IWithTransitionMatrix, IWithRandomizerCollection, IWithResourceConfig, IWithMaterials
     {
         private RandomizerCollection _randomizerCollection;
         private ResourceConfig _resourceGroups;
@@ -16,20 +15,41 @@ namespace Seed.Generator
         private TransitionMatrix _matrix { get; set; }
         private int Source { get; set; }
         public double[,] TargetTransitions { get; private set; }
-
-        public OperationDistributor(TransitionMatrix matrix
-                                    , RandomizerCollection randomizerCollection
-                                    , ResourceConfig resourceGroups
-                                    , IWithOperationsInUse operationsInUse)
+        public OperationDistributor(TransitionMatrix matrix)
         {
-            _operationsInUse = operationsInUse;
             _withSourceAndSink = false;
-            _randomizerCollection = randomizerCollection;
-            _resourceGroups = resourceGroups;
             _matrix = matrix;
             TargetTransitions = new double[matrix.GetMatrix.RowCount, matrix.GetMatrix.ColumnCount];
             _matrix.TransformToProbability();
             Source = 0;
+        }
+
+        public static IWithTransitionMatrix WithTransitionMatrix(TransitionMatrix matrix)
+        {
+            return new OperationDistributor(matrix);
+        }
+
+        public IWithRandomizerCollection WithRandomizerCollection(RandomizerCollection randomizerCollection)
+        {
+            _randomizerCollection = randomizerCollection;
+            return this;
+        }
+
+        public IWithResourceConfig WithResourceConfig(ResourceConfig resourceConfig)
+        {
+            _resourceGroups = resourceConfig;
+            return this;
+        }
+
+        public IWithMaterials WithMaterials(IWithOperationsInUse operationsInUse)
+        {
+            _operationsInUse = operationsInUse;
+            return this;
+        }
+
+        public OperationDistributor Build()
+        {
+            return this;
         }
 
         /// <summary>
@@ -37,20 +57,17 @@ namespace Seed.Generator
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        public MaterialNodeOperation[] GenerateOperationsFor(MaterialNode node, bool rerollStart)
+        public MaterialNodeOperation[] GenerateOperationsFor(MaterialNode node)
         {
-            if (rerollStart)
-                Source = _randomizerCollection.OperationTransition.Next(_matrix.GetMatrix.RowCount); // reroll start case
-
             var breakOn = _randomizerCollection.OperationAmount
                                                 .NextWithMeanAndVariance(_resourceGroups.DefaultOperationAmountDistributionParameter.Mean
                                                                         , _resourceGroups.DefaultOperationAmountDistributionParameter.Variance);
-
-            if (_withSourceAndSink)
-            {
-                breakOn = int.MaxValue;
-                Source = 0;
-            }
+            /* not implemented yet */
+            // if (_withSourceAndSink)
+            // {
+            //     breakOn = int.MaxValue;
+            //     Source = 0;
+            // }
 
             while (true) {
                 var targetResourceIndex = _matrix.GetJump(Source, _randomizerCollection.OperationTransition.Next());
@@ -69,8 +86,10 @@ namespace Seed.Generator
 
                 var operation = new MaterialNodeOperation { Name = "Operation " + node.Operations.Count + 1
                                                             , Node = node
-                                                            , TargetResourceIdent = Source
+                                                            , TargetResourceIdent = targetResourceIndex
+                                                            , TargetToolIdent = toolIndex
                                                             , SequenceNumber = node.Operations.Count + 1
+                                                            , Cost = Math.Round(customDuration.TotalHours * _resourceGroups.GetCostRateProcessingFor(targetResourceIndex), 2) 
                                                             , Duration = customDuration };
                 node.Operations.Add(operation);
 

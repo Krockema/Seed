@@ -1,6 +1,7 @@
 ﻿using Seed.Data;
 using Seed.Distributions;
 using Seed.Generator;
+using Seed.Generator.Material;
 using Seed.Parameter;
 using System;
 using System.Collections.Generic;
@@ -9,11 +10,11 @@ namespace Seed.Test.MaterialStructure
 {
     public class MaterialFixture : IDisposable
     {
-        public Configuration Configuration { get; } = new();
+        public MaterialConfig MaterialConfiguration { get; set; } = new();
         public RandomizerBase Randomizer { get; } = new RandomizerBase(29);
         public Materials Materials { get; private set; }
         public MaterialEdge[] Edges { get; private set; }
-        public Queue<MaterialEdge> InitialEdges { get; private set; }
+        public int InitialEdges { get; private set; }
         public Action<MaterialEdge[], int> solveStructure { get; } = null;
         public MaterialFixture()
         {
@@ -29,11 +30,10 @@ namespace Seed.Test.MaterialStructure
         }
         public void GenerateMaterials()
         {
-            var matGenerator = new MaterialGenerator(Configuration, Randomizer);
-            Materials = matGenerator.CreateMaterials();
-            InitialEdges = matGenerator.CreateEdges();
-            Edges = InitialEdges.ToArray();
-            matGenerator.ConnectEdges();
+            var generator = MaterialGenerator.WithConfiguration(MaterialConfiguration);
+            Materials = generator.Generate();
+            InitialEdges = generator.InitialEdgeCount;
+            Edges = Materials.Edges.ToArray();
         }
 
         public void Dispose() { }

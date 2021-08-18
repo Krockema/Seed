@@ -1,10 +1,10 @@
 ﻿using Seed.Data;
 
-namespace Seed.Generator
+namespace Seed.Generator.Operation
 {
     public interface IOperationDistributor
     {
-        MaterialNodeOperation[] GenerateOperationsFor(MaterialNode node, bool rerollStart);
+        MaterialNodeOperation[] GenerateOperationsFor(MaterialNode node);
         double[,] TargetTransitions { get; }
     }
 }

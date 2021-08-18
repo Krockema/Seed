@@ -1,14 +1,12 @@
 ﻿using Seed.Data;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace Seed.Generator
+namespace Seed.Generator.Material
 {
     public class Materials : List<MaterialHirachie>, IWithOperationsInUse, IWithNodeInUse
     {
-        public List<MaterialNode> NodesInUse { get; set; } = new List<MaterialNode>();
-        public List<MaterialNodeOperation> Operations { get; set; } = new List<MaterialNodeOperation>();
-
+        public List<MaterialNode> NodesInUse { get;  } = new List<MaterialNode>();
+        public List<MaterialNodeOperation> Operations { get; } = new List<MaterialNodeOperation>();
+        public List<MaterialEdge> Edges {  get; } = new List<MaterialEdge>();
         public int CountDequeuedNodesFor(int level) => NodesInUse.Count(x => x.InitialLevel == level);
         /// <summary>
         /// Returns one node from NodeInUse store.
@@ -43,6 +41,15 @@ namespace Seed.Generator
         public MaterialNode[] NodesPurchaseOnly()
         {
             return NodesInUse.Where(x => x.InitialLevel == this.Count - 1).ToArray();
+        }
+
+        public static void CalculateCosts(MaterialEdge[] edges)
+        {
+            foreach (var edge in edges)
+            {
+                CalculateCosts(edge.From.IncomingEdges.ToArray());
+                edge.To.Cost = Math.Round(edge.To.Operations.Sum(x => x.Cost) + edge.From.Cost, 2);
+            }
         }
     }
 }

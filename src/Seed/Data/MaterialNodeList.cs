@@ -1,5 +1,6 @@
 ﻿
 using Seed.Generator;
+using Seed.Generator.Material;
 using System.Collections.Generic;
 
 namespace Seed.Data

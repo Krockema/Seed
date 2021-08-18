@@ -1,7 +1,6 @@
 ﻿using Seed.Distributions;
-using Seed.Generator;
-using System.Collections.Generic;
-using System.Linq;
+using Seed.Generator.Material;
+using Seed.Generator.Operation;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -29,9 +28,8 @@ namespace Seed.Test.OperationStructure
         }
 
         [Theory]
-        [InlineData(true, 1000, 1, true)]
-        [InlineData(false, 1000, 1, true)]
-        public void GenerateOperations(bool rerollStart,int numberOfOperations, int seed, bool withOut)
+        [InlineData(1000, 1, true)]
+        public void GenerateOperations(int numberOfOperations, int seed, bool withOut)
         {
 
             var Randomizer = new RandomizerBase(seed);
@@ -40,15 +38,18 @@ namespace Seed.Test.OperationStructure
                                                 .WithOperationAmount(new RandomizerBinominial(Randomizer.Next(int.MaxValue)))
                                                 .Build();
             var material = new Materials();
-            var OperationDistributor = new OperationDistributor(_operationFixture.TransitionMatrix
-                                                                , randomizerCollection
-                                                                , _operationFixture.ResourceConfig
-                                                                , material);
+            var operationDistributor = OperationDistributor.WithTransitionMatrix(_operationFixture.TransitionMatrix)
+                                                            .WithRandomizerCollection(randomizerCollection)
+                                                            .WithResourceConfig(_operationFixture.ResourceConfig)
+                                                            .WithMaterials(material)
+                                                            .Build(); 
+
             var materials = _operationFixture.CreateMaterials(numberOfOperations);
             
-            _operationGenerator = new OperationGenerator(OperationDistributor, materials);
-            _operationGenerator.GenerateOperations(rerollStart);
-
+            _operationGenerator = OperationGenerator.WithOperationDistributor(operationDistributor)
+                                                    .WithMaterials(materials)
+                                                    .Generate();
+            
             var generatedOperationsMatrix = _operationGenerator.GetGeneratedTransitionMatrix();
             WriteIf(withOut, "Generated Transitions");
             WriteIf(withOut, generatedOperationsMatrix.GetMatrix.ToString());
@@ -77,17 +78,15 @@ namespace Seed.Test.OperationStructure
 
         //[Theory(Skip = "manual testing")]
         [Theory]
-        [InlineData(true, 1000, 100)]
-        [InlineData(false, 1000, 100)]
-        public void OrganizationalDegreeMassTest(bool rerollStart, int numberOfOperations, int rounds)
+        [InlineData(1000, 100)]
+        public void OrganizationalDegreeMassTest(int numberOfOperations, int rounds)
         {
             _averageOg.Clear();
             for (int i = 0; i < rounds; i++)
             {
-                GenerateOperations(rerollStart, numberOfOperations, i , false);
+                GenerateOperations(numberOfOperations, i , false);
             }
             
-            _outputHelper.WriteLine($"Organizational Degree with Reroll = {rerollStart}");
             _outputHelper.WriteLine($"based on {_numberOfOperationsCreated} operations.");
             _outputHelper.WriteLine($"OG Avg = {_averageOg.Average()}");
             _outputHelper.WriteLine($"OG Max = {_averageOg.Max()} ");
@@ -99,9 +98,8 @@ namespace Seed.Test.OperationStructure
         [Fact]
         public void ProbabilityMatrixFromTransitionMatrix()
         {
-            var generator = new TransitionMatrixGenerator(_operationFixture.Configuration);
-            generator.Generate();
-            var matrix = generator.TransitionMatrix.TransformToProbability();
+            var transitionMatrix = TransitionMatrixGenerator.WithConfiguration(_operationFixture.Configuration).Generate();
+            var matrix = transitionMatrix.TransformToProbability();
             _outputHelper.WriteLine(matrix.ToString());
             Assert.Equal(4, matrix.Column(3).AsArray().Sum(x => x));
         }

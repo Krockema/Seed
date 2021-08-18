@@ -1,7 +1,7 @@
 ﻿using Seed.Data;
 using System.Collections.Generic;
 
-namespace Seed.Generator
+namespace Seed.Generator.Material
 {
     public interface IWithOperationsInUse
     {

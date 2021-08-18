@@ -4,9 +4,9 @@ using Seed.Parameter;
 using Seed.Parameter.TransitionMatrix;
 using System;
 
-namespace Seed.Generator
+namespace Seed.Generator.Operation
 {
-    public class TransitionMatrixGenerator
+    public class TransitionMatrixGenerator : IWithTransitionMatrixConfig
     {
         private TransitionMatrixParameter transitionMatrixParameter { get; }
         double OrganizationalDegree => transitionMatrixParameter.OrganizationalDegree;
@@ -14,12 +14,16 @@ namespace Seed.Generator
         int Size { get; } 
         public TransitionMatrix TransitionMatrix { get; set; }
 
-        public TransitionMatrixGenerator(Configuration config)
+        private TransitionMatrixGenerator(Configuration config)
         {
-            transitionMatrixParameter = config.Get<TransitionMatrixParameter>();
+            transitionMatrixParameter = config.Get<MaterialConfig>().TransitionMatrixParameter;
             Size = config.Get<ResourceConfig>().ResourceGroupList.Count;
         }
 
+        public static IWithTransitionMatrixConfig WithConfiguration(Configuration config)
+        {
+            return new TransitionMatrixGenerator(config);
+        }
 
         public TransitionMatrix Generate()
         {

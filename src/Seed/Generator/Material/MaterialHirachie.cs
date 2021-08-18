@@ -1,7 +1,7 @@
 ﻿using Seed.Data;
 using System;
 
-namespace Seed.Generator
+namespace Seed.Generator.Material
 {
     public class MaterialHirachie 
     {

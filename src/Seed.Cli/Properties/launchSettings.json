@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Seed": {
+      "commandName": "Project",
+      "commandLineArgs": "-mc \"MaterialConfig.json\" -rc \"ResourceConfig.json\" -out \".\\out\\" 
+    }
+  }
+}

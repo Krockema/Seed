@@ -1,8 +1,6 @@
-using Seed.Distributions;
-using Seed.Generator;
+using Seed.Generator.Operation;
 using Seed.Matrix;
 using Seed.Parameter;
-using Seed.Parameter.TransitionMatrix;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -38,15 +36,13 @@ namespace Seed.Test
         public void Transition()
         {
             var config = new Configuration();
-            var transition = new TransitionMatrixParameter() { Lambda = 2, OrganizationalDegree = 0.15 };
-            //config.WithOption(transition);
+            config.WithOption(Configuration.ReadFromFile<MaterialConfig>("MaterialConfig.json"));
             config.WithOption(Configuration.ReadFromFile<ResourceConfig>("ResourceConfig.json"));
 
-            var generator = new TransitionMatrixGenerator(config);
-            generator.Generate();
+            var transitionMatrix = TransitionMatrixGenerator.WithConfiguration(config).Generate();
 
-            _out.WriteLine("Achieved OrganizationalDegree: " +  generator.TransitionMatrix.GetOrganizationalDegree());
-            _out.WriteLine(generator.TransitionMatrix.GetMatrix.ToString());
+            _out.WriteLine("Achieved OrganizationalDegree: " + transitionMatrix.GetOrganizationalDegree());
+            _out.WriteLine(transitionMatrix.GetMatrix.ToString());
             
         }
 

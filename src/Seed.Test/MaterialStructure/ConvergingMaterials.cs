@@ -18,7 +18,7 @@ namespace Seed.Test.MaterialStructure
         {
             _out = outputHelper;
             _materialFixture = materialFixture;
-            _materialFixture.Configuration.ReplaceOption(new MaterialConfig{ MaterialStructure = msp, OperationStructure = tmp });
+            _materialFixture.MaterialConfiguration = new MaterialConfig{ StructureParameter = msp, TransitionMatrixParameter = tmp };
             _materialFixture.GenerateMaterials();
         }
 
@@ -53,7 +53,7 @@ namespace Seed.Test.MaterialStructure
         [Fact]
         public void NoEdgesNoNodesLeftBehind()
         {
-            Assert.Empty(_materialFixture.InitialEdges);
+            Assert.Equal(_materialFixture.Materials.Edges.Count, _materialFixture.InitialEdges);
         }
         [Fact(Skip = "Manual")]
         public void ShowNodesStructures()

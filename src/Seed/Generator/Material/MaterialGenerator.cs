@@ -2,26 +2,23 @@
 using Seed.Distributions;
 using Seed.Matrix;
 using Seed.Parameter;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace Seed.Generator
+namespace Seed.Generator.Material
 {
-    public class MaterialGenerator
+    public class MaterialGenerator : IWithMaterialConfiguration
     {
         public Materials Materials { get; init; } = new();
         private MaterialConfig materialParameter;
-        private Queue<MaterialEdge> _unusedEdges = new Queue<MaterialEdge>();
-        private readonly List<MaterialEdge> _edges = new ();
+        private Queue<MaterialEdge> _unusedEdges { get; set; }  = new Queue<MaterialEdge>();
+        public int InitialEdgeCount { get; private set; }
         private readonly IRandomizer _randomizer;
-        private int _verticalIntegration => materialParameter.MaterialStructure.VerticalIntegration;
-        private double _complexityRatio => materialParameter.MaterialStructure.ComplexityRatio;
-        private double _reuseRatio => materialParameter.MaterialStructure.ReuseRatio;
-        private int _salesMaterial => materialParameter.MaterialStructure.NumberOfSalesMaterials;
-        public MaterialGenerator(Configuration cfg, IRandomizer randomizer)
+        private int _verticalIntegration => materialParameter.StructureParameter.VerticalIntegration;
+        private double _complexityRatio => materialParameter.StructureParameter.ComplexityRatio;
+        private double _reuseRatio => materialParameter.StructureParameter.ReuseRatio;
+        private int _salesMaterial => materialParameter.StructureParameter.NumberOfSalesMaterials;
+        private MaterialGenerator(MaterialConfig materialConfig, IRandomizer randomizer)
         {
-            materialParameter = cfg.Get<MaterialConfig>();
+            materialParameter = materialConfig;
             
             _randomizer = randomizer;
 
@@ -34,8 +31,25 @@ namespace Seed.Generator
             // step 2: Generate Edges
 
         }
-        
-        public Materials CreateMaterials()
+
+        public static IWithMaterialConfiguration WithConfiguration(MaterialConfig materialConfig)
+        {
+            var rnd = new RandomizerBase(materialConfig.StructureParameter.Seed);
+            var matGenerator = new MaterialGenerator(materialConfig, rnd);
+            return matGenerator;
+        }
+
+        public Materials Generate()
+        {
+            var materials = this.CreateMaterials();
+            this.CreateEdges();
+            this.ConnectEdges();
+            Materials.CalculateCosts(materials.NodesSalesOnly().SelectMany(x => x.IncomingEdges).ToArray());
+            return materials;
+        }
+
+
+        private Materials CreateMaterials()
         {
             foreach (var level in Enumerable.Range(1, _verticalIntegration))
             {
@@ -91,7 +105,7 @@ namespace Seed.Generator
                     var edge = _unusedEdges.Dequeue();
                     edge.From = lowerLevelNodes.GetNodeAt(_randomizer.Next(currentLevelNodesWithoutEdges.Count()));
                     edge.To = currentLevelNodesWithoutEdges.DequeueNode();
-                    _edges.Add(edge);
+                    Materials.Edges.Add(edge);
                 }
             }
 
@@ -109,7 +123,7 @@ namespace Seed.Generator
                     var higherLevelNodes = Materials[jumpTo].Nodes;
                     edge.From = currentLevelNodesWithoutEdges.DequeueNode();
                     edge.To = higherLevelNodes.GetNodeFromStorage(_randomizer.Next(higherLevelNodes.CountAll));
-                    _edges.Add(edge);
+                    Materials.Edges.Add(edge);
                 }
 
             }
@@ -130,7 +144,7 @@ namespace Seed.Generator
                     var edge = _unusedEdges.Dequeue();
                     edge.From = currentLevelNodesWithoutEdges.DequeueNode();
                     edge.To = higherLevelNodes.GetNodeAt(_randomizer.Next(higherLevelNodes.Count()));
-                    _edges.Add(edge);
+                    Materials.Edges.Add(edge);
                 }
             }
 
@@ -148,7 +162,7 @@ namespace Seed.Generator
                     var lowerLevelNodes = Materials[jumpTo].Nodes;
                     edge.From = lowerLevelNodes.GetNodeFromStorage(_randomizer.Next(lowerLevelNodes.CountAll));
                     edge.To = currentLevelNodesWithoutEdges.DequeueNode();
-                    _edges.Add(edge);
+                    Materials.Edges.Add(edge);
                 }
             }
             DistributeRemainingEdges();
@@ -176,7 +190,7 @@ namespace Seed.Generator
                 var targetLevel = decendingProbabilityMatrix.GetRowJump(edge.From.InitialLevel, _randomizer.Next());
                 var numberOfNodes = Materials.CountDequeuedNodesFor(targetLevel);
                 edge.To = Materials.GetNodeInUseBy(targetLevel, _randomizer.Next(numberOfNodes));
-                _edges.Add(edge);
+                Materials.Edges.Add(edge);
             }
         }
 
@@ -193,6 +207,7 @@ namespace Seed.Generator
             _unusedEdges = new Queue<MaterialEdge>(
                                 from edge in Enumerable.Range(0, edgeCount) 
                                 select new MaterialEdge());
+            InitialEdgeCount = _unusedEdges.Count();
             return _unusedEdges;
         }
     }
