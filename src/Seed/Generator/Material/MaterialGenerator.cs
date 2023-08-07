@@ -112,7 +112,7 @@ namespace Seed.Generator.Material
                 }
             }
 
-            for (int level = Materials.Count - 1; level >= 2; level--)
+            for (int level = Materials.Count - 1; level >= 1; level--)
             {
                 var currentLevelNodesWithoutEdges = Materials[level].Nodes;
                 var decendingProbabilityMatrix = new ProbabilityByDistanceMatrix(
@@ -137,7 +137,7 @@ namespace Seed.Generator.Material
         private void CreateDivergentStructure()
         {
             var stages = Materials.Count;
-            for (int level = stages - 1; level >= 2; level--)
+            for (int level = stages - 1; level >= 1; level--)
             {
                 var currentLevelNodesWithoutEdges = Materials[level].Nodes;
                 var higherLevelNodes = Materials[level - 1].Nodes;

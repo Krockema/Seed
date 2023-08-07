@@ -49,6 +49,20 @@ namespace Seed.Parameter
                                       : 10);         // Resource Default;
         }
 
+        public double GetVarianceSetupDurationFor(int resourceIndex, int toolIndex)
+        {
+            return CheckToolValue(resourceIndex, toolIndex) ?
+                this.ResourceGroupList[resourceIndex].Tools[toolIndex].SetupDistributionParameter.Variance // Per Tool
+                : 0 ;    // No further check needed as int is 0 anyway
+        }
+
+        public TimeSpan GetMeanSetupDurationFor(int resourceIndex, int toolIndex)
+        {
+            return TimeSpan.FromSeconds(CheckToolValue(resourceIndex, toolIndex) ?
+                                         this.ResourceGroupList[resourceIndex].Tools[toolIndex].SetupDistributionParameter.Mean // Per Tool
+                                      : 10);
+        }
+
         public double GetCostRateIdleTimeFor(int resourceIndex)
         {
             return this.ResourceGroupList[resourceIndex].CostRateIdleTime != 0.0 ? 

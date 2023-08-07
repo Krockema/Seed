@@ -12,8 +12,11 @@ namespace Seed.Test.MaterialStructure
     {
         private MaterialFixture _materialFixture;
         private ITestOutputHelper _out;
-        private TransitionMatrixParameter tmp = new TransitionMatrixParameter() { Lambda = 2, OrganizationalDegree = 0.15 };
-        private StructureParameter msp = new StructureParameter() { ComplexityRatio = 4, ReuseRatio = 2, NumberOfSalesMaterials = 8, VerticalIntegration = 4 };
+        private TransitionMatrixParameter tmp = new TransitionMatrixParameter() { Lambda = 2, OrganizationalDegree = 0.80 };
+        private StructureParameter msp = new StructureParameter() { ComplexityRatio = 4
+                                                                    , ReuseRatio = 2
+                                                                    , NumberOfSalesMaterials = 50
+                                                                    , VerticalIntegration = 2 };
         public ConvergingMaterials(MaterialFixture materialFixture, ITestOutputHelper outputHelper)
         {
             _out = outputHelper;
@@ -48,7 +51,7 @@ namespace Seed.Test.MaterialStructure
         [Fact]
         public void NumberOfEdges()
         {
-            Assert.Equal(224, _materialFixture.Edges.Count());
+            Assert.Equal(1400, _materialFixture.Edges.Count());
         }
         [Fact]
         public void NoEdgesNoNodesLeftBehind()

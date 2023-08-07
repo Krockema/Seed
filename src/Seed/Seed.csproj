@@ -9,6 +9,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageId>$(AssemblyName).MasterData</PackageId>
+    <Version>1.1.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

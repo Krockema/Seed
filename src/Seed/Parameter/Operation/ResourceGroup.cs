@@ -19,6 +19,9 @@ namespace Seed.Parameter.Operation
         public DistributionParameter OperationDurationDistributionParameter { get; set; }
         public List<ResourceTool> Tools { get; set; }
 
+        
+
+
         public ResourceGroup WithDefaultDurationMean(TimeSpan timeSpan)
         {
             this.OperationDurationDistributionParameter.Mean = timeSpan.TotalSeconds;
