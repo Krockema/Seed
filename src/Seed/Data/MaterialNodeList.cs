@@ -28,6 +28,13 @@ namespace Seed.Data
             _nodeCollector.NodesInUse.Add(node);
             return node;
         }
+        public bool DequeueNode(MaterialNode node)
+        {
+            var suc =  this.Remove(node);
+            _nodeCollector.NodesInUse.Add(node);
+            return suc;
+        }
+
         public int CountAll => NodeStoreage.Length;
         public MaterialNode GetNodeFromStorage(int index)
         {

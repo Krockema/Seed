@@ -7,7 +7,7 @@ namespace Seed.Generator.Material
 {
     public class Materials : List<MaterialHirachie>, IWithOperationsInUse, IWithNodeInUse
     {
-        public List<MaterialNode> NodesInUse { get;  } = new List<MaterialNode>();
+        public HashSet<MaterialNode> NodesInUse { get;  } = new HashSet<MaterialNode>();
         public List<MaterialNodeOperation> Operations { get; } = new List<MaterialNodeOperation>();
         public List<MaterialEdge> Edges {  get; } = new List<MaterialEdge>();
         public int CountDequeuedNodesFor(int level) => NodesInUse.Count(x => x.InitialLevel == level);
@@ -16,10 +16,6 @@ namespace Seed.Generator.Material
         /// </summary>
         /// <param name="index"></param>
         /// <returns>Node at Index</returns>
-        public MaterialNode GetNodeInUseBy(int index)
-        {
-            return NodesInUse[index];
-        }
         public MaterialNode GetNodeInUseBy(int level, int index)
         {
             return NodesInUse.Where(x => x.InitialLevel == level)

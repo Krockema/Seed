@@ -88,7 +88,7 @@ namespace Seed.Generator.Material
 
         public void ConnectEdges()
         {
-            if (_reuseRatio < _complexityRatio)
+            if (_reuseRatio <= _complexityRatio)
             {
                 CreateConvergentStructure();
                 return;
@@ -108,11 +108,12 @@ namespace Seed.Generator.Material
                     var edge = _unusedEdges.Dequeue();
                     edge.From = lowerLevelNodes.GetNodeAt(_randomizer.Next(currentLevelNodesWithoutEdges.Count()));
                     edge.To = currentLevelNodesWithoutEdges.DequeueNode();
+                    lowerLevelNodes.DequeueNode(edge.From);
                     Materials.Edges.Add(edge);
                 }
             }
 
-            for (int level = Materials.Count - 1; level >= 1; level--)
+            for (int level = Materials.Count - 1; level >= 2; level--)
             {
                 var currentLevelNodesWithoutEdges = Materials[level].Nodes;
                 var decendingProbabilityMatrix = new ProbabilityByDistanceMatrix(
@@ -137,7 +138,7 @@ namespace Seed.Generator.Material
         private void CreateDivergentStructure()
         {
             var stages = Materials.Count;
-            for (int level = stages - 1; level >= 1; level--)
+            for (int level = stages - 1; level >= 2; level--)
             {
                 var currentLevelNodesWithoutEdges = Materials[level].Nodes;
                 var higherLevelNodes = Materials[level - 1].Nodes;
@@ -147,6 +148,7 @@ namespace Seed.Generator.Material
                     var edge = _unusedEdges.Dequeue();
                     edge.From = currentLevelNodesWithoutEdges.DequeueNode();
                     edge.To = higherLevelNodes.GetNodeAt(_randomizer.Next(higherLevelNodes.Count()));
+                    higherLevelNodes.DequeueNode(edge.To);
                     Materials.Edges.Add(edge);
                 }
             }
@@ -174,8 +176,16 @@ namespace Seed.Generator.Material
 
         private void DistributeRemainingEdges()
         {
-            if (_unusedEdges.Count == 0)
-                return;
+            if (_unusedEdges.Count == 0) { 
+                foreach (MaterialHirachie level in Materials)
+                {
+                    for (int i = 0; i < level.Nodes.Count; i++)
+                    {
+                        Materials.NodesInUse.Add(level.Nodes.DequeueNode());
+                    }
+                }
+                return; 
+            }
 
             var decendingProbabilityMatrix = new ProbabilityByDistanceMatrix
                 (Materials.Count

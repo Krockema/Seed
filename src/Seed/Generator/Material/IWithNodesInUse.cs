@@ -5,6 +5,6 @@ namespace Seed.Generator.Material
 {
     public interface IWithNodeInUse
     {
-        public List<MaterialNode> NodesInUse { get; }
+        public HashSet<MaterialNode> NodesInUse { get; }
     }
 }

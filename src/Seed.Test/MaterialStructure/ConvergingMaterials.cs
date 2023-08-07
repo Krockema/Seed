@@ -15,8 +15,8 @@ namespace Seed.Test.MaterialStructure
         private TransitionMatrixParameter tmp = new TransitionMatrixParameter() { Lambda = 2, OrganizationalDegree = 0.80 };
         private StructureParameter msp = new StructureParameter() { ComplexityRatio = 4
                                                                     , ReuseRatio = 2
-                                                                    , NumberOfSalesMaterials = 50
-                                                                    , VerticalIntegration = 2 };
+                                                                    , NumberOfSalesMaterials = 8 
+                                                                    , VerticalIntegration = 4 };
         public ConvergingMaterials(MaterialFixture materialFixture, ITestOutputHelper outputHelper)
         {
             _out = outputHelper;
@@ -45,13 +45,13 @@ namespace Seed.Test.MaterialStructure
         [Fact]
         public void NumberOfLevels()
         {
-            Assert.Equal(2, _materialFixture.Materials.Count());
+            Assert.Equal(4, _materialFixture.Materials.Count());
         }
 
         [Fact]
         public void NumberOfEdges()
         {
-            Assert.Equal(200, _materialFixture.Edges.Count());
+            Assert.Equal(224, _materialFixture.Edges.Count());
         }
         [Fact]
         public void NoEdgesNoNodesLeftBehind()
@@ -83,13 +83,16 @@ namespace Seed.Test.MaterialStructure
             var matsSalesOnly = _materialFixture.Materials.NodesSalesOnly().Count();
             var multipleUse = (double)matsWithSuccessor / (totalMats - matsSalesOnly);
             _out.WriteLine($" Multiple Use : {multipleUse}");
-            Assert.Equal(msp.ReuseRatio, multipleUse);
+            
 
             var matsWithPredecessor = allMats.Sum(x => x.IncomingEdges.Count);
             var matsPurchaseOnly = _materialFixture.Materials.NodesPurchaseOnly().Count();
             var degreeOfComplexity = (double)matsWithPredecessor / (totalMats- matsPurchaseOnly);
             _out.WriteLine($" Complexity : {degreeOfComplexity}");
+
+
             Assert.Equal(msp.ComplexityRatio, degreeOfComplexity);
+            Assert.Equal(msp.ReuseRatio, multipleUse);
         } 
     }
 }
