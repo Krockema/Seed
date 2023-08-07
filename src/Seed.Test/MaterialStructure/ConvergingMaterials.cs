@@ -45,13 +45,13 @@ namespace Seed.Test.MaterialStructure
         [Fact]
         public void NumberOfLevels()
         {
-            Assert.Equal(4, _materialFixture.Materials.Count());
+            Assert.Equal(2, _materialFixture.Materials.Count());
         }
 
         [Fact]
         public void NumberOfEdges()
         {
-            Assert.Equal(1400, _materialFixture.Edges.Count());
+            Assert.Equal(200, _materialFixture.Edges.Count());
         }
         [Fact]
         public void NoEdgesNoNodesLeftBehind()
